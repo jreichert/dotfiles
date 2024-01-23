@@ -196,7 +196,7 @@ using DiffMerge since it's a graphical tool. In that case, you still have the
 option of using vimdiff, which is built in to vim: `gdtlvim <file1> <file2>`
 for diffing, and `gmtlvim` for merging.
 
-## Usage
+# Usage
 
 Several customizations have been made to .zshrc and .Evervim.vimrc;
 those two files are well commented and should indicate all of the existing
