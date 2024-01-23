@@ -95,8 +95,8 @@ let g:override_evervim_bundles = 1
 "   let g:evervim_use_lightline = 1
 
 " Header constants for generating and updating the comment header
-let g:header_field_author = 'Jake Reichert'
-let g:header_field_author_email = 'jake@jakereichert.com'
+let g:header_field_author = $NAME
+let g:header_field_author_email = $EMAIL
 
 " Startup Screen
 " You can customize the welcome message by changing the following line
@@ -224,19 +224,13 @@ set updatetime=300
 set signcolumn=yes
 set switchbuf=useopen
 
-" This tells vim that iterm2 supports gui colors &
-" therefore should use them instead of basic console colors.
-" Without this, the colors don't match properly.
-" TODO some colorschemes look great with GUI colors but have
-" terrible console mode colors.  Should probably try to figure
-" out programatically (if possible) whether the current tty
-" supports them, and choose the colorscheme accordingly.
-" Needed for running fzf
+" Add support for fzf
 set rtp+=/usr/local/opt/fzf
 
 " Turn of highlighting from last search with an extra <CR>.
 " Does not currently work; the "wildfire fuel" plugin is highlighting <CR>
-" to do a visual select of the current block.
+" to do a visual select of the current block. UnPlug that plugin in
+" .EverVim.bundles and uncomment the next two lines if desired.
 " nnoremap <silent> <CR> :nohlsearch<BAR>:echo<CR>
 "hnnoremap <silent> <Leader>h :nohlsearch<BAR>:echo<CR>
 
@@ -302,9 +296,10 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-" The Silver Searcher: replace ack with ag (faster version)
-let g:ackprg = 'ag --nogroup --nocolor --column'
-" let g:ackprg = 'ag --vimgrep'
+" The Silver Searcher: replace ack with ag if available
+if executable('ag')
+    let g:ackprg = 'ag --nogroup --nocolor --column'
+endif
 
 " ########## PERSONAL FUNCTIONS ########## "
 " Show the output of any command in a new vsplit
@@ -337,20 +332,16 @@ function! Redir(cmd, rng, start, end)
     call setline(1, output)
 endfunction
 
-" Uncomment one of the two versions of the command below.  See comments for
-" each.
-" This command definition includes -bar, so that it is possible to "chain"
-" Vim commands. Side effect: double quotes can't be used in external commands
-"commad! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
+" Uncomment one of the two versions of the command below to control behavior of
+" Redir defined above.  See comments for each.
+"
 " This command definition doesn't include -bar, so that it is possible to use double quotes in external commands.
 " Side effect: Vim commands can't be "chained".
 command! -nargs=1 -complete=command -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
 
-augroup VimrcAuGroup
-    autocmd!
-    autocmd FileType vimwiki setlocal foldmethod=expr |
-                \ setlocal foldenable
-augroup END
+" This command definition includes -bar, so that it is possible to "chain"
+" Vim commands. Side effect: double quotes can't be used in external commands
+"commad! -nargs=1 -complete=command -bar -range Redir silent call Redir(<q-args>, <range>, <line1>, <line2>)
 
 " ########## VIMWIKI ############## "
 " save this in ~/Documents so it is accessible from other machines
@@ -383,6 +374,13 @@ let g:vimwiki_valid_html_tags = 'b,i,s,u,sub,sup,kbd,br,hr, pre, script'
 " let g:vimwiki_list = [{'path': '~/vimwiki/',
 "     \ 'syntax': 'markdown', 'ext': '.md'}]
 
+" Make folding in Vimwiki rational
+augroup VimrcAuGroup
+    autocmd!
+    autocmd FileType vimwiki setlocal foldmethod=expr |
+                \ setlocal foldenable
+augroup END
+
 " ####### STARTIFY ######## "
 " pull in a custom ASCII art header if one exists
 " source ~/.vimrc.startify-logo
@@ -413,8 +411,11 @@ function Get_shortcuts()
     return mode
 endfunction
 
+" --- Git functions for Startify: the next 2 functions are used to show 
+"    modified and untracked files in the current repo, respectively
+
 " returns all modified files of the current git repo
-" `2>/dev/null` makes the command fail quietly, so that when we are not
+" Note: `2>/dev/null` makes the command fail quietly, so that when we are not
 " in a git repo, the list will be empty
 function! s:gitModified()
     let files = systemlist('git ls-files -m 2>/dev/null')
@@ -427,7 +428,8 @@ function! s:gitUntracked()
     return map(files, "{'line': v:val, 'path': v:val}")
 endfunction
 
-" Read ~/.NERDTreeBookmarks file and takes its second column
+" Read ~/.NERDTreeBookmarks file and takes its second column;
+" used to build Startify links below
 function! s:nerdtreeBookmarks()
     let bookmarks = systemlist("cut -d' ' -f 2- ~/.NERDTreeBookmarks")
     let bookmarks = bookmarks[0:-2] " Slices an empty last line
@@ -496,7 +498,8 @@ let g:tagbar_type_vimwiki = {
 " }
  autocmd CursorHold * silent call CocActionAsync('highlight')
 
-
+" ALE plugin config - currently not working (although CoC does most of what ALE
+" does)
  let g:ale_fixers = {
         \    'javascript': [
         \    'importjs',

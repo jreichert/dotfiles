@@ -9,9 +9,6 @@ Plug 'lifepillar/vim-solarized8'
 " ctags integration
 Plug 'ludovicchabant/vim-gutentags'
 
-" Modern Tagbar alterative - NeoVim only!
-Plug 'liuchengxu/vista.vim'
-
 " improved syntax highlighting
 "Plug 'sheerun/vim-polyglot'
 
@@ -29,12 +26,27 @@ Plug 'tpope/vim-unimpaired'
 Plug 'junegunn/vim-easy-align'
 Plug 'dhruvasagar/vim-table-mode'
 
+" ##### NeoVim Section #####
+" TODO: instead of having to comment/uncomment manually, follow this post to make use of the correct
+" plugin depending on if NeoVim is installed:
+" https://vi.stackexchange.com/questions/6995/can-i-get-vim-plug-to-skip-installing-a-plugin-based-on-some-vimscript-conditio
+" Note that to make this really bulletproof would probably also require conditionally doing or not
+" doing things in .EverVim.vimrc and/or .EverVim.vimrc.after (and maybe ftplugins and...ugh.
+" Probably better to just install NeoVim unless it's actually not possible)
+
+"Modern Tagbar alterative - NeoVim only!
+" Comment this out if using standard Vim
+Plug 'liuchengxu/vista.vim'
+
 " Code completion 
 " disable YouCompleteMe in favor of CoC
+" If using standard Vim, comment out the next 3 lines
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc-prettier'
-Plug 'mlaursen/vim-react-snippets'
 UnPlug 'ycm-core/YouCompleteMe'
+
+" ##### End NeoVim section #####
+
 "UnPlug 'dense-analysis/ale'
 " like bracket-matching but for if/fi, do/end, etc.
 Plug 'tpope/vim-endwise'
@@ -49,6 +61,10 @@ Plug 'chaoren/vim-imageview'
 " Plug 'romgrk/todoist.nvim', { 'do': ':TodoistInstall' }
 Plug 'github/copilot.vim'
 Plug 'tpope/vim-rhubarb'
+
+" Ultisnips (currently not working)
+" React Snippets for Ultisnips
+Plug 'mlaursen/vim-react-snippets'
 
 " TODO: Ultisnips is breaking Python
 UnPlug 'SirVer/ultisnips'

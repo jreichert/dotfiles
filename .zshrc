@@ -92,10 +92,21 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 #### ENVIRONMENT VARIABLES
+export NAME='Jake Reichert'
+export EMAIL='jake@jakereichert.com'
 # export MANPATH="/usr/local/man:$MANPATH"
+
+# If set to true, any time you type a shell command then 
+# if there is a shortcut available for that command it will be 
+# printed in the CLI.  Useful for learning shortcuts you may not 
+# even know exist, but turn it off if this bugs you 
 export ZSH_ALIAS_FINDER_AUTOMATIC=true
 export TODOIST_API_KEY="$(pass Todoist/API)"
-export EDITOR='nvim'
+export EDITOR='vim'
+if command -v nvim &> /dev/null 
+then 
+    export EDITOR='nvim'
+fi
 
 # For dotbare (https://github.com/kazhala/dotbare)
 export DOTBARE_DIR=$HOME/.dotbare
@@ -163,8 +174,12 @@ alias zshconfig="vim ~/.zshrc"
 alias vimwiki="vim -c VimwikiIndex"
 alias acs=als
 
-# use GNU ls for better coloring
-alias ls="gls --color=always"
+# use GNU ls for better coloring when not on a Linux system
+# NOTE: This only aliases the ls command, even though gnu coreutils adds replacements for many
+# programs.  See the following post on all of the coreutils programs, and what to do if you want to
+# prioritize all of these instead of just ls over the Mac versions:
+# https://stackoverflow.com/questions/57972341/how-to-install-and-use-gnu-ls-on-macos
+alias_if_installed gls ls "gls --color=always"
 
 # use nvim if available
 alias_if_installed nvim vim
@@ -180,7 +195,7 @@ alias_if_installed bat cat
 # python, ftcbz and unrar to be installed.  Use:
 # * brew install rar
 # * pip install ftcbz
-alias cbr2cbz="ftcbz --extractors rar --compressor cbz ."
+alias_if_installed ftcbz cbr2cbz "ftcbz --extractors rar --compressor cbz ."
 
 # git shortcuts (there are many more from the git and gh plugins too)
 alias gum="git checkout --conflict=merge"

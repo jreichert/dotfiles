@@ -16,7 +16,9 @@ let g:nerdtree_tabs_open_on_new_tab=1
 let g:vimwiki_folding="expr:quick"
 
 " for 'vim-test/vim-test'
-let test#strategy="neovim"
+if executable('nvim')
+    let test#strategy="neovim"
+endif
 
 " hotkey for editing the custom .EverVim.vimrc.after file
 nnoremap <leader>ea :sp ~/.EverVim.vimrc.after<CR>
@@ -56,6 +58,7 @@ nnoremap <Leader>tc :TestNearest<CR>
 nnoremap <Leader>ta :TestFile<CR>
 
 """""""" Settings for ALE plugin """"""""""
+" (Not currently working - use CoC instead)
 """ note that some default values are set by EverVim and may 
 """ need to be overridden here.  See ~/.vimrc/plugins/programming/ale.vim 
 """ for the list of ale variables set by EverVim.

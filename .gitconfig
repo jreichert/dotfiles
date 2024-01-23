@@ -1,8 +1,8 @@
 # This is Git's per-user configuration file.
 [user]
 # Please adapt and uncomment the following lines:
-name = Jake Reichert
-email = jake@jakereichert.com
+name = $NAME
+email = $EMAIL
 [diff]
 	tool = diffmerge
 [difftool "diffmerge"]
@@ -14,8 +14,6 @@ email = jake@jakereichert.com
 	cmd = /usr/local/bin/diffmerge.sh --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 [init]
 	defaultBranch = main
-[gui]
-    recentrepo = /Users/jake/projects/sagen/sagen-api-nodejs
 
 #### Config for git-delta (https://github.com/dandavison/delta?tab=readme-ov-file) ####
 [core]
