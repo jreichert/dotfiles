@@ -86,7 +86,7 @@ install coreutils`.
 - [LS COLORS PROFILE](https://github.com/trapd00r/LS_COLORS/blob/master/LS_COLORS): a good set of custom colors for use with LS.
   Note that this is already set by default to the variable \$LS_COLORS; you only need this repo if you want to modify anything.
 
-###Development Tools
+### Development Tools
 
 - [asdf](https://asdf-vm.com/): The best multi-language version manager
 - [DiffMerge](https://sourcegear.com/diffmerge/): Git diff/merge tool
