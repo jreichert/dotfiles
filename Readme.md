@@ -19,11 +19,13 @@ personal config. Some highlights of what this does, which is not an exhaustive l
 - A great LS_COLORS scheme to make terminal sessions much easier to read (covers \*nix/Mac/PC)
 - Using Dotbare allows you to sync changes from any machine that this repo is installed on.
 
-### Prerequisites
+# Prerequisites
 
 I have tried to make as much of this functionality work out of the box as possible. However, this
 config requires that you have the following already installed (TBD: a script to automatically
-install all of these for you).
+install all of these for you). **It is important to have these installed before you use dotbare to
+load the custom configuration files in this repo!** If not, the setup scripts for the programs
+below will overwrite the dotfiles.
 
 - [Dotbare](https://github.com/kazhala/dotbare): This is used to bootstrap this repo and put
   everything in the proper place.
@@ -51,14 +53,14 @@ If you can't install/don't want to use NeoVim then instead you will use:
 
 Se installation instructions below for how to switch to YouCompleteMe if using Vim.
 
-#### Optional (but recommended)
+## Optional (but recommended)
 
 In most cases you can install these programs manually either before or after using dotbare to update
 your dotfiles. However if you plan to use NeoVim (which you probably should), it is strongly
 recommended to install that now. Vim and NeoVim store things such as edit history differently, so
 you end up having to do a lot of manual cleanup if you want to switch later on.
 
-**Vim Related**:
+### Vim Related
 
 - [NeoVim](https://neovim.io/). **Highly Recommended**. A much more modern implementation of
   Vim with many more plugins available. If installed, also use the following NeoVim-specific plugins:
@@ -69,9 +71,9 @@ you end up having to do a lot of manual cleanup if you want to switch later on.
   Template for Vimwiki HTML formatting. Download the files in the repo -
   they will be used in the installation below.
 
-**Shell- or Shell+Vim-Related**:
+### Shell- or Shell+Vim-Related
 
-- [GNU Coreutils](https://www.gnu.org/software/coreutils/): Better version of core Unix utilities.
+- [GNU Cgit@github.com:jreichert/dotfiles.gitoreutils](https://www.gnu.org/software/coreutils/): Better version of core Unix utilities.
   These are probably pre-installed on Linux machines; on Macs you need to install them with `brew 
 install coreutils`.
 - [The Silver Searcher](https://geoff.greer.fm/ag/): fast drop-in replacement for ack
@@ -81,23 +83,23 @@ install coreutils`.
   with fzf, and more
 - [universal-ctags](https://ctags.io/): creates tags used by vim for code
   navigation (may work with exuberant ctags but unsure)
-- GNU coreutils: `brew install coreutils`
 - [LS COLORS PROFILE](LS Colors pro): a good set of custom colors for use with LS.
 
-**Development Tools**
+###Development Tools
 
 - [asdf](https://asdf-vm.com/): The best multi-language version manager
 - [DiffMerge](https://sourcegear.com/diffmerge/): Git diff/merge tool
   (however see note below if you do not install it)
 
-**Specific programs with helpers**:
+### Specific programs with helpers
+
 These programs have shortcuts you can read about in .zshrc. Only install them if you need them
 (nothing will break if you don't).
 
 - [SnowSQL](https://docs.snowflake.com/en/user-guide/snowsql): CLI for Snowflake DB
 - [ftcbz](https://pypi.org/project/ftcbz/): tool for batch converting .cbr files to .cbz
 
-### Installation
+# Installation
 
 1. Install all of the prerequisites above. For now you must do this manually; in the future I hope to
    have a script to automate the process.
@@ -118,65 +120,34 @@ export DOTBARE_TREE="$HOME"
 5. In .zshrc, find the line with all of the plugins it will install. Manually install each one or
    remove the ones you don't need.
 
-6. Only needed if using Vim instead of NeoVim: Open .EverVim.bundles and comment or uncomment
+6. Also in .zshrc, replace \$HOME and \$EMAIL with your information. This is used for Git and
+   elsewhere.
+
+7. EverVim uses [Vim Plug](https://github.com/junegunn/vim-plug) as
+   its plugin manager. To install the plugins included here, open a vim session
+   and type the following two commands in normal mode:
+
+- `:PlugInstall`
+- `:PlugClean!`
+
+8. Only needed if using Vim instead of NeoVim: Open .EverVim.bundles and comment or uncomment
    plugins according to the directions in that file.
 
-(TODO: Update the instructions as this isn't actually correct.
-Copy all the files to the 'correct' locations for each application.)
+# Configuration
 
-Most functionality is controlled through .zshrc environment variables & aliases, or by
-.EverVim.vimrc and .EverVim.vimrc.after for Vim/NeoVim configuration (the difference between the two
-.vimrc files is for things that should load either before or after EverVim sets up all its plugins,
-key mappings, etc. - basically if you want to override anything in EverVim's settings, put in in the
-.after file).
+After following the instructions above, everything should work out of the box. Any further
+configuration is optional. Changes to ZSH functionality is controlled through .zshrc as normal.
 
-At minimum, in .zshrc change \$NAME and \$EMAIL to the correct values.
-
-Copy all files from this project to `$HOME` (back up the existing files listed
-in package*assets.sh if you want to be careful not to override anything). You
-must do this \_after* installing the prerequisites above, as several files from
-this repo are copied into hidden directories that the EverVim installer
-creates.
+Vim functionality, however, is controlled by .EverVim.vimrc and .EverVim.vimrc.after (the difference
+between the two .vimrc files is for things that should load either before or after EverVim sets up
+all its plugins, key mappings, etc. - basically if you want to override anything in EverVim's settings,
+put in in the .after file). See the next section for details.
 
 The default setup in .EverVim.bundles assumes that you have installed NeoVim; if you weren't able to
 do that, you will need to manually edit that file to comment/uncomment code to get rid of plugins
 that only work with NeoVim and replace them with their Vim equivalents.
 
-#### EverVim EverVim uses [Vim Plug](https://github.com/junegunn/vim-plug) as
-
-its plugin manager. To install the plugins included here, open a vim session
-and type the following two commands in normal mode:
-
-- `:PlugInstall`
-- `:PlugClean!`
-
-Run the following commands to override some of EverVim's plugin customizations.
-
-```sh
-cp .Evervim/core/core.vim $HOME/.EverVim/core
-cp .Evervim.vimrc.after $HOME
-```
-
-#### vimwiki
-
-The current configuration uses the [Dark Vimwiki HTML
-Template](https://github.com/rahul13ramesh/Dark-Vimwiki-Template). In order for
-this to work, after the wiki is generated you need to manually copy the
-contents of the `wiki_html` folder to `~/Downloads/vimwiki_html` (or wherever
-you have configured your vimwiki files to live if you changed that).
-
-Vimwiki is configured in `.Evervim.vimrc`. If you wish to change the path
-where the vimwiki files are located or disable/change this template, you can do
-so there.
-
-#### git
-
-If you are optionally using DiffMerge, copy the file
-usr/local/bin/diffmerge.sh to your /usr/local/bin.
-
-### Configuraton
-
-#### EverVim custom configuration
+## Vim
 
 With the rare exception of some plugin configuration variables (see next
 paragraph), **all Vim customization should be added to .Evervim.vimrc**.
@@ -199,6 +170,18 @@ file .EverVim.vimrc.after to this project. Any variables added here will take
 precedence over the values that EverVim has set. In general it's a good idea
 to keep most of your configuration in .EverVim.vimrc so it's all in one place;
 only add variables here that need to be here.
+
+## vimwiki
+
+The current configuration uses the [Dark Vimwiki HTML
+Template](https://github.com/rahul13ramesh/Dark-Vimwiki-Template). In order for
+this to work, after the wiki is generated you need to manually copy the
+contents of the `wiki_html` folder to `~/Downloads/vimwiki_html` (or wherever
+you have configured your vimwiki files to live if you changed that).
+
+Vimwiki is configured in `.Evervim.vimrc`. If you wish to change the path
+where the vimwiki files are located or disable/change this template, you can do
+so there.
 
 #### Git Merge
 
@@ -238,12 +221,21 @@ customizations. Here are a few important ones:
 - vimwiki files are saved in `$HOME/Documents`, as this will automatically sync
   their contents across all your Macs if you use iCloud sharing (and it's a dir
   that exists on Linux and Windows as well). You can change this in .Evervim.vimrc.
-- Support for `.tsx` Typescript files has been added to Tagbar.
+- Support for `.tsx` Typescript files has been added to Tagbar. However if NeoVim
+  is available, the Vista plugin is far superior for TS development.
+- bat is an amazing replacement for cat. It adds line numbering, syntax highlighting,
+  navigation and more.
+- fzf is _incredibly_ powerful, both for shell integration as well as inside Vim.
+  There are many tutorials for it available online. It uses bat for file previews
+  if bat is installed.
 
 ## Creating Updates
 
-In order to update the contents of this repo, run the package_assets.sh script
-in this project, `git commit`, then `git push origin`.
+dotbare auomatically tracks any changes to files that are already included in this repo. After you
+have made any changes, you can push them using normal git syntax (git add, commit, push, etc.) just
+by typing `dotbare` instead of `git` (ex: `dotbare add .gitconfig`). Adding new dotfiles is
+_usually_ as simple as doing `dotbare add [filename]`, however see caveats below about adding files
+that live inside of their own git repos (such as 3rd party customizations you download).
 
 ## Caveats
 
@@ -260,7 +252,7 @@ in this project, `git commit`, then `git push origin`.
   your \$HOME directory can't be easily added to this repo (since git sees them as belonging to a
   different repo). See below for a workaround.
 
-## Workaround for tracking files inside git repositories
+### Workaround for tracking files inside git repositories
 
 In some public Git projects, the instructions basically say "check out this module, then modify file
 XZY to your needs" (EverVim does this all over the place, since you need to customize it the same
@@ -293,11 +285,11 @@ steps below, pull changes, and then repeate them.
 3. At each level, move any `.gitignore` to `.gitignore.old`.
 4. Finally, add the file to this repo with `dotbare add [filename]`. It should now work.
 
-## TODO
+# TODO
 
 - Figure out how to automatically export color presets from iTerm
 
-## Reference
+# Reference
 
 ctags and the Vim Tagbar plugin have poor support for .tsx files.
 Installing this package should make this work better with no additional
