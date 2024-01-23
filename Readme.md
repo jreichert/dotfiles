@@ -184,7 +184,7 @@ Vimwiki is configured in `.Evervim.vimrc`. If you wish to change the path
 where the vimwiki files are located or disable/change this template, you can do
 so there.
 
-### Git Merge
+## Git Merge
 
 This config is set up to use [DiffMerge](https://sourcegear.com/diffmerge/) as
 its tool for both Git Diffs and Git merges. If it is installed locally then
