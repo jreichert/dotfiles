@@ -84,7 +84,7 @@ install coreutils`.
 - [universal-ctags](https://ctags.io/): creates tags used by vim for code
   navigation (may work with exuberant ctags but unsure)
 - [LS COLORS PROFILE](https://github.com/trapd00r/LS_COLORS/blob/master/LS_COLORS): a good set of custom colors for use with LS.
-  Note that this is already set by default to the variable \$LS_COLORS; you only need this repo if you want to modify anything.
+  Note that these dotfiles will already make ZSH use that color scheme; you only need this repo if you want to modify anything.
 
 ### Development Tools
 
@@ -184,7 +184,7 @@ Vimwiki is configured in `.Evervim.vimrc`. If you wish to change the path
 where the vimwiki files are located or disable/change this template, you can do
 so there.
 
-#### Git Merge
+### Git Merge
 
 This config is set up to use [DiffMerge](https://sourcegear.com/diffmerge/) as
 its tool for both Git Diffs and Git merges. If it is installed locally then
