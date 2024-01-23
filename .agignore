@@ -1,0 +1,6 @@
+# ignore file for ag (i.e. The Silver Searcher).  Anything in here 
+# is ignored globally.  To override this behavior for a specific search, 
+# use one of the following flags:
+# -U: don't use any .gitignore files, but do use .ignore (i.e. ones specific to ag)
+# -u: unrestricted search (i.e. don't use any .ignore or .gitignore files)
+tags
