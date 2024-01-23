@@ -232,7 +232,7 @@ customizations. Here are a few important ones:
 
 ## Creating Updates
 
-dotbare auomatically tracks any changes to files that are already included in this repo. After you
+dotbare automatically tracks any changes to files that are already included in this repo. After you
 have made any changes, you can push them using normal git syntax (git add, commit, push, etc.) just
 by typing `dotbare` instead of `git` (ex: `dotbare add .gitconfig`). Adding new dotfiles is
 _usually_ as simple as doing `dotbare add [filename]`, however see caveats below about adding files
