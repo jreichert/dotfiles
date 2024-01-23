@@ -1,0 +1,27 @@
+{
+  "diagnostic.enable": true,
+  "coc.preferences.formatOnSave": true,
+  "coc.preferences.jumpCommand": "drop",
+  "colors.enable": true,
+  "highlight.trace": "verbose",
+  "suggest.floatConfig": {
+    "border": true,
+    "shadow": true
+  },
+  "signature.floatConfig": {
+    "border": true,
+    "shadow": true
+  },
+  "hover.floatConfig": {
+    "border": true,
+    "shadow": true
+  },
+  "diagnostic.floatConfig": {
+    "border": true,
+    "shadow": true
+  },
+  "snippets.ultisnips.pythonPrompt": false,
+  "tsserver.log": "verbose",
+  "tsserver.trace.server": "verbose",
+  "tsserver.implicitProjectConfig.module": "ES6"
+}

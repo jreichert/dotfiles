@@ -1,0 +1,54 @@
+" Note on functionality
+" The UnPlug command is ONLY for disabling plugins that come prebundled with EverVim.
+" To stop using a plugin that was manually installed, just comment out 
+" the 'Plug' line for that plugin.
+
+" Maintained version of Solarized
+Plug 'lifepillar/vim-solarized8'
+
+" ctags integration
+Plug 'ludovicchabant/vim-gutentags'
+
+" Modern Tagbar alterative - NeoVim only!
+Plug 'liuchengxu/vista.vim'
+
+" improved syntax highlighting
+"Plug 'sheerun/vim-polyglot'
+
+"" QoL Features """
+" adds a 'line' text object (e.g. dal = delete around current line)
+Plug 'kana/vim-textobj-line'
+" wipe out buffers more easily
+Plug 'qpkorr/vim-bufkill'
+" Open more stuff with the 'gx' command
+Plug 'stsewd/gx-extended.vim'
+" More aliases for pair matching/jumping
+Plug 'tpope/vim-unimpaired'
+
+" alignment and table creation
+Plug 'junegunn/vim-easy-align'
+Plug 'dhruvasagar/vim-table-mode'
+
+" Code completion 
+" disable YouCompleteMe in favor of CoC
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-prettier'
+Plug 'mlaursen/vim-react-snippets'
+UnPlug 'ycm-core/YouCompleteMe'
+"UnPlug 'dense-analysis/ale'
+" like bracket-matching but for if/fi, do/end, etc.
+Plug 'tpope/vim-endwise'
+
+" test runner integration
+Plug 'vim-test/vim-test'
+Plug 'tpope/vim-projectionist'
+UnPlug 'vim-scripts/a.vim'
+
+" Random stuff
+Plug 'chaoren/vim-imageview'
+" Plug 'romgrk/todoist.nvim', { 'do': ':TodoistInstall' }
+Plug 'github/copilot.vim'
+Plug 'tpope/vim-rhubarb'
+
+" TODO: Ultisnips is breaking Python
+UnPlug 'SirVer/ultisnips'

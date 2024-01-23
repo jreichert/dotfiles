@@ -1,0 +1,96 @@
+" Put any variables in here that MUST be set after EverVim loads everthing
+" else.  Typically, this will be because you need to override the default
+" settings that EverVim has assigned to the built-in plugins.
+" TODO: for some reason <leader> in .EverVim.vimrc is picking up the value
+" of local leader.  figure out why, but workaround for now is to put any
+" remaps that start with the leader in this file instead.
+
+"set textwidth=80
+set wrapmargin=0
+set wrap
+set linebreak " (optional - breaks by word rather than character)
+
+"let g:solarized_visibility="high"
+let g:nerdtree_tabs_synchronize_view=1
+let g:nerdtree_tabs_open_on_new_tab=1
+let g:vimwiki_folding="expr:quick"
+
+" for 'vim-test/vim-test'
+let test#strategy="neovim"
+
+" hotkey for editing the custom .EverVim.vimrc.after file
+nnoremap <leader>ea :sp ~/.EverVim.vimrc.after<CR>
+nnoremap <Leader>vp :sp<CR>:VimwikiIndex<CR>
+
+nnoremap <Leader>tg :TagbarToggle<CR>
+"nnoremap <Leader>nt :NERDTreeToggle<CR> :NERDTreeTabsToggle<CR>
+"nnoremap <C-e> :NERDTreeTabsToggle<CR>
+
+" shortcut to completely close the current buffer
+nnoremap <Leader>bw :bwipeout<CR>
+
+" List all currently available shortcuts in new vsplit
+command ListShortcuts Redir verbose map
+nnoremap <leader>sh :ListShortcuts<CR>
+
+" EverVim provides a config to clear search highlighting, but it
+" doesn't allow you to customize the key used (they use <leader>/)
+" nnoremap <silent> g<CR> :nohlsearch<BAR>:echo<CR>
+nnoremap <silent> g<CR> :set invhlsearch<CR>
+
+" replace a.vim mappings with vim-projectionist
+nnoremap <Leader>ia :A<CR>
+nnoremap <Leader>is :AS<CR>
+nnoremap <Leader>iv :AV<CR>
+nnoremap <Leader>it :AT<CR>
+nnoremap <Leader>io :AO<CR>
+
+" Improved Coc navigation - move to COC file below
+nmap <silent> \ge <Plug>(coc-definition)
+nmap <silent> \gs :sp<CR><Plug>(coc-definition)
+nmap <silent> \gv :vsp<CR><Plug>(coc-definition)
+nmap <silent> \gt :vsp<CR><Plug>(coc-definition)<C-W>T
+
+" testrunner integration
+nnoremap <Leader>tc :TestNearest<CR>
+nnoremap <Leader>ta :TestFile<CR>
+
+"""""""" Settings for ALE plugin """"""""""
+""" note that some default values are set by EverVim and may 
+""" need to be overridden here.  See ~/.vimrc/plugins/programming/ale.vim 
+""" for the list of ale variables set by EverVim.
+
+" let g:ale_disable_lsp = 1
+
+""" whether or not the linter should run when a buffer is first opened
+""" default: 1
+""" let g:ale_lint_on_enter = 0
+
+""" if true, only the linters specified in g:ale_linters will be used.
+""" otherwise all available linters for the filetype will be used.
+""" default: 0
+" let g:ale_linters_explicit = 1
+" let g:ale_linters = {'javascript': ['deno']}
+" let g:ale_linters_ignore = {'javascript': ['eslint']}
+
+""" if true, the quickfix/loclist window will stay open even after 
+""" all errors are addressed.
+""" default: 0
+" let g:ale_keep_list_window_open = 0
+
+"""use quickfix or loclist for displaying error messages.
+""" quickfix is a single pane at the bottom, loclist is a separate window 
+""" opened per file
+""" default: 0
+let g:ale_set_quickfix = 1
+
+""" whether or not to automatically open the quickfix/loclist window when errors are found
+""" default: 0 (but set to 1 in EverVim)
+let g:ale_open_list = 0
+
+""" # of lines in the loclist window (doesn't work for quickfix), that 
+""" needs to be handled with an autocmd 
+""" default: 10
+" let g:ale_list_window_size = 4
+
+source ~/.EverVim/after/vimrc/coc.vimrc  
