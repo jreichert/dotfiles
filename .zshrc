@@ -107,6 +107,16 @@ if command -v nvim &> /dev/null
 then 
     export EDITOR='nvim'
 fi
+# LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
+LESSOPEN="|/usr/local/Cellar/bat-extras/2023.09.19/bin/batpipe %s";
+export LESSOPEN;
+ unset LESSCLOSE;
+
+ # The following will enable colors when using batpipe with less:
+ LESS="-R --use-color";
+ BATPIPE="color";
+ # export LESS;
+ export BATPIPE;
 
 # For dotbare (https://github.com/kazhala/dotbare)
 export DOTBARE_DIR=$HOME/.dotbare

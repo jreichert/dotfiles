@@ -81,6 +81,15 @@ install coreutils`.
 - [fd](https://github.com/sharkdp/fd): fast replacement for find (integrates seamlessly with fzf)
 - [bat](https://github.com/sharkdp/bat): replacement for cat with code highlighting, integration
   with fzf, and more
+- [bat-extras](https://github.com/eth-p/bat-extras): extend functionality of bat to apply to pdfs,
+  word docs, etc., as well as integration with grep, man, and more
+- [poppler](https://poppler.freedesktop.org/): pdf rendering tools. Used with bat-extras to display
+  pdfs on the command line. Can be installed via homebrew
+- [lesspipe](https://github.com/wofr06/lesspipe): like batpipe this extends the functionality of
+  less to read different doc types. If bat-extras is installed this is mostly superfluous,
+  however it does add a useful shell tab completion where you can list all the files inside an
+  archive as you are typing it (ex: `bat myzipfile.zip<TAB>` brings up somebinary.exe and
+  readme.txt; now you can use tab completion to make that `bat myzipfile.zip/readme.txt)`)
 - [universal-ctags](https://ctags.io/): creates tags used by vim for code
   navigation (may work with exuberant ctags but unsure)
 - [LS COLORS PROFILE](https://github.com/trapd00r/LS_COLORS/blob/master/LS_COLORS): a good set of custom colors for use with LS.
