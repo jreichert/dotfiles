@@ -20,6 +20,9 @@ if executable('nvim')
     let test#strategy="neovim"
 endif
 
+" shortcut to close the help window
+nnoremap <Leader>hc :helpclose<CR>
+
 " hotkey for editing the custom .EverVim.vimrc.after file
 nnoremap <leader>ea :sp ~/.EverVim.vimrc.after<CR>
 nnoremap <Leader>vp :sp<CR>:VimwikiIndex<CR>

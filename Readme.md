@@ -98,6 +98,7 @@ install coreutils`.
 ### Development Tools
 
 - [asdf](https://asdf-vm.com/): The best multi-language version manager
+- [git-delta](https://github.com/dandavison/delta): easier to understand command line diffs
 - [DiffMerge](https://sourcegear.com/diffmerge/): Git diff/merge tool
   (however see note below if you do not install it)
 

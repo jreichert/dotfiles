@@ -79,8 +79,18 @@ ZSH_THEME="robbyrussell"
 #
 # NOTE: zsh-vi-mode conflicts with fzf key bindings & completions, so you need to pick one
 plugins=(ag alias-finder aliases asdf aws brew bundler colored-man-pages common-aliases \
-    dirhistory docker dotbare gh git git-prompt iterm2 macos OhMyZsh-full-autoupdate rails \
-    ruby zsh-interactive-cd zsh-navigation-tools zsh-autosuggestions zsh-pipx zsh-poetry fzf-zsh-plugin )
+    dirhistory docker dotbare gh git git-prompt OhMyZsh-full-autoupdate  \
+     zsh-interactive-cd zsh-navigation-tools zsh-autosuggestions  fzf-zsh-plugin )
+
+# Uncomment these on MacOS
+plugins+=(iterm2 macos)
+
+# Uncomment these for Ruby development
+#plugins+=(rails ruby)
+
+# uncomment these for Python
+#plugins+=(zsh-pipx zsh-poetry)
+
 source $ZSH/oh-my-zsh.sh
 
 # maybe this can be done using plugins instead
@@ -117,6 +127,9 @@ export LESSOPEN;
  BATPIPE="color";
  # export LESS;
  export BATPIPE;
+
+# Use git-delta for diffing files through bat
+BATDIFF_USE_DELTA=true
 
 # For dotbare (https://github.com/kazhala/dotbare)
 export DOTBARE_DIR=$HOME/.dotbare
@@ -191,7 +204,7 @@ alias acs=als
 # https://stackoverflow.com/questions/57972341/how-to-install-and-use-gnu-ls-on-macos
 alias_if_installed gls ls "gls --color=always"
 
-# use nvim if available
+# use nvim if activatingh lable
 alias_if_installed nvim vim
 alias_if_installed nvim vi
 

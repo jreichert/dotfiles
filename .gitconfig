@@ -25,6 +25,9 @@ email = $EMAIL
 [delta]
     navigate = true    # use n and N to move between diff sections
     light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+    side-by-side = true # whether to show file versions next to each other, or in one file as regular diff does
+    line-numbers = true
+    hyperlinks = true
 
 [merge]
     conflictstyle = diff3
