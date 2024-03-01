@@ -104,6 +104,9 @@ source $ZSH/oh-my-zsh.sh
 #### ENVIRONMENT VARIABLES
 export NAME='Jake Reichert'
 export EMAIL='jake@jakereichert.com'
+
+git config --global user.name "$NAME"
+git config --global user.email "$EMAIL"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # If set to true, any time you type a shell command then 
@@ -167,6 +170,11 @@ _fzf_comprun() {
   esac
 }
 
+brew_disc_usage() {
+brew list --formula | xargs -n1 -P8 -I {} \
+    sh -c "brew info {} | egrep '[0-9]* files, ' | sed 's/^.*[0-9]* files, \(.*\)).*$/{} \1/'" | \
+    sort -h -r -k2 - | column -t
+}
 ####### PERSONAL ALIASES ##########
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -221,7 +229,13 @@ alias_if_installed bat cat
 alias_if_installed ftcbz cbr2cbz "ftcbz --extractors rar --compressor cbz ."
 
 # git shortcuts (there are many more from the git and gh plugins too)
+
+# Unstage a file added with 'git add'
+alias gu="git restore --staged"
+
 alias gum="git checkout --conflict=merge"
+
+# run git diff using the preferred tool (currently DiffMerge)
 alias gdtl="git difftool --no-prompt"
 
 #  Use nvim instead of vim for difftool if available

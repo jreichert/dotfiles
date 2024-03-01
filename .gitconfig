@@ -1,8 +1,10 @@
 # This is Git's per-user configuration file.
 [user]
+	name = Jake Reichert
+	email = jake@jakereichert.com
 # Please adapt and uncomment the following lines:
-name = $NAME
-email = $EMAIL
+; name = !bash
+; email = jake@sagen.ai
 [diff]
 	tool = diffmerge
 [difftool "diffmerge"]
