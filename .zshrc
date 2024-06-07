@@ -1,6 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$HOME/Library/Python/3.11/bin:$PATH
 
+
 # set up homebrew path
 eval $(/usr/local/bin/brew shellenv)
 
@@ -71,6 +72,20 @@ ZSH_THEME="robbyrussell"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+###### PRE-PLUGIN VARIABLES #########
+# If a variable is needed when loading one of the plugins below, define it here;
+# It won't be seen if it is at the end of the file!
+
+# Previews for more file types in fzf, using batpipe to do this
+export FZF_PREVIEW_ADVANCED=true
+export FZF_CHANGE_PREVIEW_WINDOW="--bind 'ctrl-/:change-preview-window(right,99%|down,99%,border-horizontal|hidden|right)'"
+eval $(batpipe)
+export FZF_EXTENDED_VIEWER='batpipe'
+export FZF_EZA_CONFIG='eza -1 --all --git --tree --color=always --icons=always'
+
+# Colorized output via GNU ls (i.e. gls)
+source ~/LS_COLORS/lscolors.sh
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
@@ -78,9 +93,9 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 #
 # NOTE: zsh-vi-mode conflicts with fzf key bindings & completions, so you need to pick one
-plugins=(ag alias-finder aliases asdf aws brew bundler colored-man-pages common-aliases \
+plugins=(fzf-tab ag alias-finder aliases asdf aws brew bundler colored-man-pages common-aliases \
     dirhistory docker dotbare gh git git-prompt OhMyZsh-full-autoupdate  \
-     zsh-interactive-cd zsh-navigation-tools zsh-autosuggestions  fzf-zsh-plugin )
+      zsh-navigation-tools zsh-autosuggestions  fzf-zsh-plugin )
 
 # Uncomment these on MacOS
 plugins+=(iterm2 macos)
@@ -94,8 +109,8 @@ plugins+=(iterm2 macos)
 source $ZSH/oh-my-zsh.sh
 
 # maybe this can be done using plugins instead
-# autoload -U bashcompinit
-# bashcompinit
+autoload -U bashcompinit
+bashcompinit
 
 #eval "$(pyenv virtualenv-init -)"
 
@@ -120,16 +135,21 @@ if command -v nvim &> /dev/null
 then 
     export EDITOR='nvim'
 fi
-# LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
-LESSOPEN="|/usr/local/Cellar/bat-extras/2023.09.19/bin/batpipe %s";
-export LESSOPEN;
- unset LESSCLOSE;
 
- # The following will enable colors when using batpipe with less:
- LESS="-R --use-color";
- BATPIPE="color";
- # export LESS;
- export BATPIPE;
+# LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
+# eval $(batpipe)
+# TODO: can probably remove all this, it's just a dupe of the 
+# output of the last eval line
+# LESSOPEN="|/usr/local/Cellar/bat-extras/2023.09.19/bin/batpipe %s";
+#  # LESSOPEN="|/usr/local/bin/batpipe.sh %s";
+#  export LESSOPEN;
+#   unset LESSCLOSE;
+
+#   # The following will enable colors when using batpipe with less:
+#   LESS="-R --use-color";
+#   BATPIPE="color";
+#   # export LESS;
+#   export BATPIPE;
 
 # Use git-delta for diffing files through bat
 BATDIFF_USE_DELTA=true
@@ -153,22 +173,52 @@ export DOTBARE_DIR=$HOME/.dotbare
 
 #### FZF CONFIG #####
 
-# The following source & exports aren't needed if using the fzf-zsh-plugin
+# The following source & exports aren't needed if using the fzf-zsh-plugin,
+# as the plugin sets them based on your installed apps
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 # export FZF_DEFAULT_OPTS="--preview 'bat --color=always {}'"
+# export FZF_PREVIEW="batpipe {}"
 # export FZF_DEFAULT_COMMAND="fd --type f"
 
-# This makes the fzf preview pane useful for seeing dir contents
-_fzf_comprun() {
-  local command=$1
-  shift
+# FZF_DEFAULT_OPTS+=("--bind 'ctrl-/:change-preview-window(right,70%|down,40%,border-horizontal|hidden|right)'")
 
-  case "$command" in
-    cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
-    *)            fzf "$@" ;;
-  esac
-}
+# zstyle vars for customizing fzf-tab
+# # disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# # preview directory's content with eza when completing cd
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview '$LESSFILTER_EZA_CONFIG $realpath'
+# # switch group using `<` and `>`
+# zstyle ':fzf-tab:*' switch-group '<' '>'
+
+zstyle ':fzf-tab:complete:*' fzf-preview 'lessfilter-fzf $word'
+
+# This is an example of how to use a zstyle with fzf-tab
+# zstyle ':fzf-tab:complete:*' fzf-preview '
+# echo word: $word
+# echo description: $desc
+# (( $+ctxt[group] )) && echo group: $group
+# (( $+ctxt[isfile] )) && echo path: $realpath
+# '
+
+# This makes the fzf preview pane useful for seeing dir contents
+# _fzf_comprun() {
+#   local command=$1
+#   echo "COMMAND: $command"
+#   shift
+
+#   case "$command" in
+#     cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
+#     *)            fzf "$@" ;;
+#   esac
+# }
 
 brew_disc_usage() {
 brew list --formula | xargs -n1 -P8 -I {} \
@@ -249,6 +299,3 @@ alias venvactivate="source ./venv/bin/activate"
 
 # Created by `pipx` on 2023-07-10 17:42:43
 export PATH="/usr/local/opt/postgresql@15/bin:$PATH:/Users/jake/.local/bin"
-
-# Colorized output via GNU ls (i.e. gls)
-source ~/LS_COLORS/lscolors.sh
