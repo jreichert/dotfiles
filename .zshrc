@@ -1,10 +1,14 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$HOME/Library/Python/3.11/bin:$PATH
+
+if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
 . $HOME/.asdf/installs/rust/1.82.0/env
+fi
 
 
 # set up homebrew path
-eval $(/usr/local/bin/brew shellenv)
+BREW_DIR=`which brew`
+eval $($BREW_DIR shellenv)
 
 # set up iterm2 integration
 zstyle :omz:plugins:iterm2 shell-integration yes
@@ -147,7 +151,9 @@ git config --global user.email "$EMAIL"
 # printed in the CLI.  Useful for learning shortcuts you may not 
 # even know exist, but turn it off if this bugs you 
 export ZSH_ALIAS_FINDER_AUTOMATIC=true
-export TODOIST_API_KEY="$(pass Todoist/API)"
+
+# Commenting this out since moving to Notion
+# export TODOIST_API_KEY="$(pass Todoist/API)"
 export EDITOR='vim'
 if command -v nvim &> /dev/null 
 then 
