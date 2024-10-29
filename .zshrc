@@ -1,5 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$HOME/Library/Python/3.11/bin:$PATH
+. $HOME/.asdf/installs/rust/1.82.0/env
 
 
 # set up homebrew path
@@ -79,9 +80,26 @@ ZSH_THEME="robbyrussell"
 # Previews for more file types in fzf, using batpipe to do this
 export FZF_PREVIEW_ADVANCED=true
 export FZF_CHANGE_PREVIEW_WINDOW="--bind 'ctrl-/:change-preview-window(right,99%|down,99%,border-horizontal|hidden|right)'"
-eval $(batpipe)
-export FZF_EXTENDED_VIEWER='batpipe'
-export FZF_EZA_CONFIG='eza -1 --all --git --tree --color=always --icons=always'
+
+# Prefer batpipe to lesspipe if it's available
+if command -v batpipe &> /dev/null 
+then
+    eval $(batpipe)
+    export FZF_EXTENDED_VIEWER='batpipe'
+elif command -v lesspipe.sh &> /dev/null
+then
+    LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
+fi
+
+if command -v eza &> /dev/null
+then
+    export FZF_EZA_CONFIG='eza -1 --all --git --tree --color=always --icons=always'
+fi
+
+if command -v chafa &> /dev/null
+then
+    # export FZF_CHAFA_CONFIG='chafa '
+fi
 
 # Colorized output via GNU ls (i.e. gls)
 source ~/LS_COLORS/lscolors.sh
@@ -93,8 +111,8 @@ source ~/LS_COLORS/lscolors.sh
 # Add wisely, as too many plugins slow down shell startup.
 #
 # NOTE: zsh-vi-mode conflicts with fzf key bindings & completions, so you need to pick one
-plugins=(fzf-tab ag alias-finder aliases asdf aws brew bundler colored-man-pages common-aliases \
-    dirhistory docker dotbare gh git git-prompt OhMyZsh-full-autoupdate  \
+plugins=(fzf-tab alias-finder aliases asdf aws brew bundler colored-man-pages common-aliases \
+    dirhistory docker dotbare gh git git-prompt OhMyZsh-full-autoupdate rust  \
       zsh-navigation-tools zsh-autosuggestions  fzf-zsh-plugin )
 
 # Uncomment these on MacOS
@@ -109,8 +127,8 @@ plugins+=(iterm2 macos)
 source $ZSH/oh-my-zsh.sh
 
 # maybe this can be done using plugins instead
-autoload -U bashcompinit
-bashcompinit
+# autoload -U bashcompinit
+# bashcompinit
 
 #eval "$(pyenv virtualenv-init -)"
 
@@ -136,20 +154,6 @@ then
     export EDITOR='nvim'
 fi
 
-# LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
-# eval $(batpipe)
-# TODO: can probably remove all this, it's just a dupe of the 
-# output of the last eval line
-# LESSOPEN="|/usr/local/Cellar/bat-extras/2023.09.19/bin/batpipe %s";
-#  # LESSOPEN="|/usr/local/bin/batpipe.sh %s";
-#  export LESSOPEN;
-#   unset LESSCLOSE;
-
-#   # The following will enable colors when using batpipe with less:
-#   LESS="-R --use-color";
-#   BATPIPE="color";
-#   # export LESS;
-#   export BATPIPE;
 
 # Use git-delta for diffing files through bat
 BATDIFF_USE_DELTA=true

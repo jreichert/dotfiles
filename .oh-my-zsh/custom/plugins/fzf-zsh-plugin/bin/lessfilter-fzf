@@ -35,12 +35,12 @@ category=${mime%%/*}
 kind=${mime##*/}
 viewer=${FZF_EXTENDED_VIEWER:='lesspipe.sh'}
 eza_args=${FZF_EZA_CONFIG:='eza --git --header --long --color=always --icons'}
+chafa_args=${FZF_CHAFA_CONFIG:='chafa'}
 
 if [ -d "$1" ] && has_cmd eza; then
   $eza_args "$1"
-  # eza --git --header --long --color=always --icons "$1"
 elif [ "$category" = image ] && has_cmd chafa && has_cmd exiftool; then
-  chafa --exact-size on "$1"
+  $chafa_args "$1"
   exiftool "$1"
 elif has_cmd $viewer; then
   # At the time of writing, `lesspipe.sh` does not use `eza` and `chafa`, it just uses `ls` and `exiftool`. It

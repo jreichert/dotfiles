@@ -77,6 +77,7 @@ you end up having to do a lot of manual cleanup if you want to switch later on.
   These are probably pre-installed on Linux machines; on Macs you need to install them with `brew 
 install coreutils`.
 - [The Silver Searcher](https://geoff.greer.fm/ag/): fast drop-in replacement for ack
+- [chafa](): terminal-based image viewer
 - [fzf](https://github.com/junegunn/fzf): fuzzy find engine
 - [fd](https://github.com/sharkdp/fd): fast replacement for find (integrates seamlessly with fzf)
 - [bat](https://github.com/sharkdp/bat): replacement for cat with code highlighting, integration
