@@ -1,9 +1,13 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$HOME/Library/Python/3.11/bin:$PATH
 
-if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
-. $HOME/.asdf/installs/rust/1.82.0/env
+if [[ -f "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
 fi
+
+# if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
+# . $HOME/.asdf/installs/rust/1.82.0/env
+# fi
 
 
 # set up homebrew path
