@@ -19,6 +19,9 @@ personal config. Some highlights of what this does, which is not an exhaustive l
 - A great LS_COLORS scheme to make terminal sessions much easier to read (covers \*nix/Mac/PC)
 - Using Dotbare allows you to sync changes from any machine that this repo is installed on.
 
+# This all seemed to work fine but now my tab completion is painfully slow!
+See [Known Issues](#known-issues) below for a possible fix. 
+
 # Prerequisites
 
 I have tried to make as much of this functionality work out of the box as possible. However, this
@@ -39,6 +42,11 @@ below will overwrite the dotfiles.
 - [Git](https://git-scm.com/): You probably wouldn't be reading this right now if you aren't already
   using Git.
 
+** FZF may be temporararily required as many of the zstyles use it in .zshrc**. 
+Once these are changed to load conditionally only if fzf is installed, then this 
+requirement will be removed.
+- [fzf](https://github.com/junegunn/fzf): fuzzy find engine
+
 If using NeoVim, the following NeoVim-only packages will be automatically installed:
 
 - [Conqueror of Completion \(COC\)](https://github.com/neoclide/coc.nvim): Code completion &
@@ -51,7 +59,7 @@ If you can't install/don't want to use NeoVim then instead you will use:
 
 - [YouCompleteMe](https://ycm-core.github.io/YouCompleteMe/): Code completion engine.
 
-Se installation instructions below for how to switch to YouCompleteMe if using Vim.
+See installation instructions below for how to switch to YouCompleteMe if using Vim.
 
 ## Optional (but recommended)
 
@@ -73,14 +81,30 @@ you end up having to do a lot of manual cleanup if you want to switch later on.
 
 ### Shell- or Shell+Vim-Related
 
-- [GNU Cgit@github.com:jreichert/dotfiles.gitoreutils](https://www.gnu.org/software/coreutils/): Better version of core Unix utilities.
-  These are probably pre-installed on Linux machines; on Macs you need to install them with `brew 
-install coreutils`.
-- [The Silver Searcher](https://geoff.greer.fm/ag/): fast drop-in replacement for ack
+#### Essential 
+While technically not required, the following are plugins that I use so frequently 
+that I couldn't imagine a shell without them.
+
+- [The Silver Searcher](https://geoff.greer.fm/ag/): fast drop-in replacement for ack.
+  Not only does this replace find/grep in your shell in a much more user-friendly
+  way, but it allows you to type `:AG yoursearchterm` in Vim to search for that text 
+  anywhere in your project.
+- [fzf](https://github.com/junegunn/fzf): fuzzy find engine.
+  This is used for fuzzy searching in the shell, and also has a plugin for Vim that
+  allows you to search through your project files. It is _incredibly_ powerful, and
+  I highly recommend reading the documentation to see all of the features it has.
+- [bat](https://github.com/sharkdp/bat): replacement for cat with code highlighting, integration.
+  The .zshrc in this repo will use it for file previewing as well from the 
+  command line.
+
+#### Other
+
+- [GNU Coreutils](https://www.gnu.org/software/coreutils/): Better version of core Unix utilities.
+  These are probably pre-installed on Linux machines; on Macs you need to install them with
+  `brew install coreutils`.
+- [eza](https://github.com/eza-community/eza): replacement for ls with more features
 - [chafa](): terminal-based image viewer
-- [fzf](https://github.com/junegunn/fzf): fuzzy find engine
 - [fd](https://github.com/sharkdp/fd): fast replacement for find (integrates seamlessly with fzf)
-- [bat](https://github.com/sharkdp/bat): replacement for cat with code highlighting, integration
   with fzf, and more
 - [bat-extras](https://github.com/eth-p/bat-extras): extend functionality of bat to apply to pdfs,
   word docs, etc., as well as integration with grep, man, and more
@@ -240,6 +264,12 @@ customizations. Here are a few important ones:
 - fzf is _incredibly_ powerful, both for shell integration as well as inside Vim.
   There are many tutorials for it available online. It uses bat for file previews
   if bat is installed.
+
+## Known Issues
+- Sometimes tab completion can get painfully slow (requiring a ctrl-c to exit it) 
+  or starts exhibiting strange behavior.  If this occurs, running the command
+  `rebuild_compinit` might fix it.  This simply rebuilds the cache that is used for 
+  tab completion, which can sometimes get corrupted or outdated.
 
 ## Creating Updates
 

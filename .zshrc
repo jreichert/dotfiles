@@ -1,5 +1,61 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$HOME/Library/Python/3.11/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+export CC=/opt/homebrew/opt/llvm/bin/clang
+
+##### FOR SILICON MAC USERS #####
+# In order to use Rosetta2 for x86_64 emulation, you need a separate 
+# installation of homebrew in /usr/local/homebrew that is the x86 version. 
+# By default your silicon-native homebrew will be used (which is what you want 
+# 99% of the time).  If you have reason to want to specifically use the x86_64 
+# version, you can use the `intel-brew` alias to switch to it.  You will then 
+# need to use `arm-brew` to switch back to the native version, or simply 
+# close the terminal session and start a new one.
+#
+# If you are not using rosetta (either because you are on an Intel Mac or you 
+# don't want to install it), it defaults to using your 'regular' 
+# homebrew installed at /opt/homebrew.  Just don't use the `intel-brew` alias 
+# in that case, as you don't have a separate installation of homebrew at /usr/local.
+#
+
+# Function to dynamically set environment variables based on Homebrew prefix
+set_homebrew_compilers() {
+  # Determine the active Homebrew prefix
+  local brew_prefix
+  brew_prefix=$(brew --prefix)
+
+  if [[ "$brew_prefix" == "/usr/local" ]]; then
+    # x86_64 Homebrew (Intel)
+    export CC="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang"
+    export CXX="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang++"
+    export LDFLAGS="-L/usr/local/opt/openssl@3/lib -L/usr/local/opt/gnutls/lib"
+    export CPPFLAGS="-I/usr/local/opt/openssl@3/include -I/usr/local/opt/gnutls/include"
+    export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+  elif [[ "$brew_prefix" == "/opt/homebrew" ]]; then
+    # ARM Homebrew (Apple Silicon)
+    export CC="/opt/homebrew/Library/Homebrew/shims/mac/super/clang"
+    export CXX="/opt/homebrew/Library/Homebrew/shims/mac/super/clang++"
+    export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib -L/opt/homebrew/opt/gnutls/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include -I/opt/homebrew/opt/gnutls/include"
+    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  else
+    # Default fallback (system Clang)
+    export CC="/usr/bin/clang"
+    export CXX="/usr/bin/clang++"
+    unset LDFLAGS
+    unset CPPFLAGS
+  fi
+}
+
+# Default to platform-native Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers
+
+## DON'T USE THIS ALIAS UNLESS YOU KNOW WHAT YOU ARE DOING - see above ##
+# Alias for switching to x86_64 Homebrew
+alias intel-brew='eval "$(/usr/local/bin/brew shellenv)" && set_homebrew_compilers'
+
+# Alias for switching back to ARM-based Homebrew
+alias arm-brew='eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers'
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
@@ -15,7 +71,10 @@ BREW_DIR=`which brew`
 eval $($BREW_DIR shellenv)
 
 # set up iterm2 integration
+# TODO: do this only if running on Mac
 zstyle :omz:plugins:iterm2 shell-integration yes
+
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -94,6 +153,7 @@ if command -v batpipe &> /dev/null
 then
     eval $(batpipe)
     export FZF_EXTENDED_VIEWER='batpipe'
+    export BAT_OPTS="--style=numbers --color=always"
 elif command -v lesspipe.sh &> /dev/null
 then
     LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
@@ -186,33 +246,74 @@ export DOTBARE_DIR=$HOME/.dotbare
 # export ARCHFLAGS="-arch x86_64"
 
 #### FZF CONFIG #####
-
+# NOTE: Trying to get this to work by setting env vars is painful because of the 
+# order in which they get executed and in which contexts.  Consequently I've commented 
+# all of this out and used zstyle below instead.  I am leaving this here for reference.
+#
 # The following source & exports aren't needed if using the fzf-zsh-plugin,
 # as the plugin sets them based on your installed apps
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # export FZF_DEFAULT_OPTS="--preview 'bat --color=always {}'"
-# export FZF_PREVIEW="batpipe {}"
+# export FZF_DEFAULT_OPTS="--preview 'if [ -d {} ]; then tree $(realpath {}); else bat {}; fi' --color"
+# export FZF_PREVIEW="bat {}"
 # export FZF_DEFAULT_COMMAND="fd --type f"
-
-# FZF_DEFAULT_OPTS+=("--bind 'ctrl-/:change-preview-window(right,70%|down,40%,border-horizontal|hidden|right)'")
+# export FZF_DEFAULT_OPTS="--bind 'ctrl-/:toggle-preview' --bind '?:toggle-preview'"
+# export FZF_PREVIEW_WINDOW=":nohidden"
 
 # zstyle vars for customizing fzf-tab
+# while these look more complex than setting environment variables,
+# they are actually easier to get working
+
+# show dotfiles for tab completion
+setopt globdots
+
 # # disable sort when completing `git checkout`
 zstyle ':completion:*:git-checkout:*' sort false
+
 # set descriptions format to enable group support
 # NOTE: don't use escape sequences here, fzf-tab will ignore them
 zstyle ':completion:*:descriptions' format '[%d]'
+
 # set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
 # # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
-# # preview directory's content with eza when completing cd
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview '$LESSFILTER_EZA_CONFIG $realpath'
-# # switch group using `<` and `>`
-# zstyle ':fzf-tab:*' switch-group '<' '>'
 
-zstyle ':fzf-tab:complete:*' fzf-preview 'lessfilter-fzf $word'
+# custom fzf-tab flags.  Note that these only apply to using 
+# fzf for tab completion.  They do not work when using plain 'fzf' to 
+# open a session.
+# fzf-tab does not follow FZF_DEFAULT_OPTS by default, tell it to do so
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+# override the default behavior and start with the preview window open
+zstyle ':fzf-tab:*' fzf-flags --height=40% --min-height=10 --preview-window '60%:nohidden' 
+# zstyle ':fzf-tab:*' fzf-flags --height=40% --min-height=10 --preview-window ':nohidden' --bind 'ctrl-t:preview(eza --tree --color=always "$realpath" | head -200)'
+
+# # switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
+
+# zstyle ':fzf-tab:*' fzf-preview-window 'right:50%'
+
+# for directories, use eza for previews.  For regular files, have lessfilter-fzf
+# decide how to best preview them.
+zstyle ':fzf-tab:complete:*' fzf-preview \
+  'if [[ -d "$realpath" ]]; then eza -1 --all --git  --tree --long --level=3 --color=always --icons=always "$realpath" | head -200; else lessfilter-fzf "$realpath"; fi'
+zstyle ':fzf-tab:complete:**' fzf-preview \
+  'if [[ -d "$realpath" ]]; then eza -1 --all --git  --tree --long --level=3 --color=always --icons=always "$realpath" | head -200; else lessfilter-fzf "$realpath"; fi'
+
+# this line was causing tab completion to fail for files inside of subdirectories.
+# the line following is the replacement for that, which still allows for retrieving 
+# info about files in subdirs and subdirs of subdirs, without that problem.
+# zstyle ':completion:*' file-patterns '**/*(-/)'
+zstyle ':completion:*' file-patterns '%p:globbed-files' '%p:directories'
+
+
+# TODO: currently not working
+zstyle ':fzf-tab:*' fzf-preview-bindings \
+    '?:toggle-preview' \
+    'ctrl-t:preview(eza --tree --color=always "$word" | head -200)' \
+    'ctrl-l:preview(eza --long --color=always "$word")'
 
 # This is an example of how to use a zstyle with fzf-tab
 # zstyle ':fzf-tab:complete:*' fzf-preview '
@@ -239,6 +340,18 @@ brew list --formula | xargs -n1 -P8 -I {} \
     sh -c "brew info {} | egrep '[0-9]* files, ' | sed 's/^.*[0-9]* files, \(.*\)).*$/{} \1/'" | \
     sort -h -r -k2 - | column -t
 }
+
+####### PERSONAL FUNCTIONS ##########
+# Put any functions here that do useful stuff for you.
+
+# If tab completion gets slow, you can run this to rebuild the 
+# compinit cache.  This is just a cache so it is a safe operation 
+# that won't disrupt any of your settings.
+rebuild_compinit() {
+    rm -f ~/.zcompdump*
+    compinit
+}
+
 ####### PERSONAL ALIASES ##########
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -313,3 +426,25 @@ alias venvactivate="source ./venv/bin/activate"
 
 # Created by `pipx` on 2023-07-10 17:42:43
 export PATH="/usr/local/opt/postgresql@15/bin:$PATH:/Users/jake/.local/bin"
+
+# !! IMPORTANT !! this must go *before* the conda init block
+#
+# Do not automatically activate the base environment
+# during shell initialization.
+export CONDA_AUTO_ACTIVATE_BASE=false
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

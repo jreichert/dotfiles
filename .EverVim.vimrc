@@ -69,6 +69,9 @@ let g:evervim_airline_theme="solarized_flood"
 " By default it's "Knack Nerd Font" on Unix and "Knack NF" on Windows
 "   let g:evervim_font="Knack Nerd Font"
 "let g:evervim_font="FuraCode Nerd Font Mono"
+" TODO: Monaco monospace is better because it is more Mac-like.  It is
+" the default on Mac iterm anyway, but should be explicitly added here and 
+" installed to work across environments.
 let g:evervim_font="Agave Nerd Font Mono"
 "   let g:evervim_font_size="12"
 
@@ -301,6 +304,7 @@ if executable('ag')
     let g:ackprg = 'ag --nogroup --nocolor --column'
 endif
 
+
 " ########## PERSONAL FUNCTIONS ########## "
 " Show the output of any command in a new vsplit
 function! Redir(cmd, rng, start, end)
@@ -351,19 +355,31 @@ command! -nargs=1 -complete=command -range Redir silent call Redir(<q-args>, <ra
 " setting/unsetting the variable below in after/ftplugin/vimwiki.vim
 "  let g:vim_markdown_folding_disabled=1
 let g:vimwiki_global_ext = 0
-let g:vimwiki_list = [{'path': '~/Documents/vimwiki/',
+
+" TODO: I had to change the path below because that is the only way to refer to it in iCloud
+" Documents folder if it isn't what you use on your local machine for documents (like at work).  
+" See if this change works across all environments, or if we need to set this variable differently 
+" depending on if we have or have not mapped the local Documents folder to the one in iCloud.
+let g:vimwiki_list = [{'path': '/Users/jake/Library/Mobile Documents/com~apple~CloudDocs/Documents/vimwiki',
             \ 'syntax': 'markdown', 'ext': '.md', 'auto_toc': 1, 'auto_tags': 1, 'automatic_nested_syntaxes': 1,
-            \ 'custom_wiki2html': '/Users/jake/.asdf/installs/python/3.10.10/lib/python3.10/site-packages/vimwiki_markdown.py',
+            \ 'custom_wiki2html': 'vimwiki_markdown',
             \ 'template_path': '~/.EverVim/wiki/templates',
             \ 'template_default': 'def_template',
             \ 'links_space_char': '-',
             \ 'template_ext': '.html'}]
+" original version - see TODO above
 " let g:vimwiki_list = [{'path': '~/Documents/vimwiki/',
 "             \ 'template_path': '~/.EverVim/wiki/templates',
 "             \ 'template_default': 'def_template',
 "             \ 'template_ext': '.html'}]
 
 let g:vimwiki_markdown_link_ext=0
+
+" disable the table formatting shortcuts since <Tab> conflicts with copilot
+let g:vimwiki_key_mappings = {
+    \ 'table_format': 0,
+    \ 'table_mappings': 0,
+\ }
 "let g:vimwiki_ext2syntax={'.md': 'markdown'}
 "let g:vimwiki_filetypes = ['markdown']
 "let g:vimwiki_custom_wiki2html='~/.EverVim/custom_scripts/pandoc_md2html.sh'
@@ -505,3 +521,4 @@ let g:tagbar_type_vimwiki = {
         \    'importjs',
              \],
         \}
+

@@ -3,7 +3,26 @@
     "coc.preferences.formatOnSave": true,
     "coc.preferences.jumpCommand": "drop",
     "colors.enable": true,
+    "list.previewSplitRight": true,
+    "list.maxPreviewHeight": 20,
+    "highlight.document.enable": true,
+    "highlight.colors.enable": true,
+    "highlight.colorNames.enable": true,
     "highlight.trace": "verbose",
+    "jedi.enable": true,
+    "jedi.startupMessage": false,
+    "jedi.trace.server": "verbose", // Set to "verbose" for debugging
+    "jedi.completion.disableSnippets": false,
+    "jedi.completion.resolveEagerly": false,
+    "python.analysis.diagnosticMode": "openFilesOnly", // Controls diagnostics for imports and more
+    "python.analysis.autoImportCompletions": true, // Enables auto-import suggestions
+    "python.analysis.autoSearchPaths": true, // Automatically searches for module paths
+    "python.analysis.typeCheckingMode": "basic", // Optional: Disable type checking if not needed
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportDuplicateImport": "warning", // Customize import-related diagnostics
+        "reportUnusedImport": "none" // Suppress unused import warnings
+    },
+    "suggest.autoTrigger": "always", // Ensure autocompletion triggers automatically
     "suggest.floatConfig": {
         "border": true,
         "shadow": true
@@ -26,6 +45,14 @@
     "tsserver.log": "verbose",
     "tsserver.trace.server": "verbose",
     "tsserver.implicitProjectConfig.module": "ES6",
+    "eslint.run": "onType",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "eslint.nodePath": "./node_modules",
     "workspace.ignoredFolders": [
         "$HOME",
         "$HOME/.cargo/**",

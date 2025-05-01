@@ -44,6 +44,8 @@ Plug 'liuchengxu/vista.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc-prettier'
 UnPlug 'ycm-core/YouCompleteMe'
+UnPlug 'Quramy/tsuquyomi'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " ##### End NeoVim section #####
 
