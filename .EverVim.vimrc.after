@@ -10,6 +10,9 @@ set wrapmargin=0
 set wrap
 set linebreak " (optional - breaks by word rather than character)
 
+" Show Cursor rules files using Markdown highlighting
+au BufRead,BufNewFile *.mdc set filetype=markdown
+
 "let g:solarized_visibility="high"
 let g:nerdtree_tabs_synchronize_view=1
 let g:nerdtree_tabs_open_on_new_tab=1
@@ -19,6 +22,15 @@ let g:vimwiki_folding="expr:quick"
 if executable('nvim')
     let test#strategy="neovim"
 endif
+
+" Open a terminal window at the bottom of the current screen
+" nnoremap <silent> <Leader>th :botright split \| resize 12 \| terminal<CR>
+" nnoremap <silent> <Leader>th :<C-u>botright split \| resize 12 \| terminal \| startinsert<CR>
+" nnoremap <silent> <Leader>t :<C-u>execute 'botright split' \| execute 'resize 12' \| terminal \| startinsert<CR>
+nnoremap <silent> <Leader>th :botright split \| resize 12 \| terminal<CR>:startinsert<CR>
+
+
+
 
 " shortcut to close the help window
 nnoremap <Leader>hc :helpclose<CR>
@@ -117,6 +129,7 @@ require 'nvim-treesitter.configs'.setup {
     },
   },
 }
+vim.treesitter.language.register("dockerfile", "Dockerfile")
 EOF
 
 lua << EOF
@@ -137,3 +150,4 @@ let g:indentLine_setConceal = 0
 autocmd FileType json setlocal conceallevel=0
 
 source ~/.EverVim/after/vimrc/coc.vimrc  
+

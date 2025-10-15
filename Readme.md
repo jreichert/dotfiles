@@ -20,7 +20,8 @@ personal config. Some highlights of what this does, which is not an exhaustive l
 - Using Dotbare allows you to sync changes from any machine that this repo is installed on.
 
 # This all seemed to work fine but now my tab completion is painfully slow!
-See [Known Issues](#known-issues) below for a possible fix. 
+
+See [Known Issues](#known-issues) below for a possible fix.
 
 # Prerequisites
 
@@ -42,9 +43,10 @@ below will overwrite the dotfiles.
 - [Git](https://git-scm.com/): You probably wouldn't be reading this right now if you aren't already
   using Git.
 
-** FZF may be temporararily required as many of the zstyles use it in .zshrc**. 
-Once these are changed to load conditionally only if fzf is installed, then this 
+** FZF may be temporararily required as many of the zstyles use it in .zshrc**.
+Once these are changed to load conditionally only if fzf is installed, then this
 requirement will be removed.
+
 - [fzf](https://github.com/junegunn/fzf): fuzzy find engine
 
 If using NeoVim, the following NeoVim-only packages will be automatically installed:
@@ -81,20 +83,21 @@ you end up having to do a lot of manual cleanup if you want to switch later on.
 
 ### Shell- or Shell+Vim-Related
 
-#### Essential 
-While technically not required, the following are plugins that I use so frequently 
+#### Essential
+
+While technically not required, the following are plugins that I use so frequently
 that I couldn't imagine a shell without them.
 
 - [The Silver Searcher](https://geoff.greer.fm/ag/): fast drop-in replacement for ack.
   Not only does this replace find/grep in your shell in a much more user-friendly
-  way, but it allows you to type `:AG yoursearchterm` in Vim to search for that text 
+  way, but it allows you to type `:AG yoursearchterm` in Vim to search for that text
   anywhere in your project.
 - [fzf](https://github.com/junegunn/fzf): fuzzy find engine.
   This is used for fuzzy searching in the shell, and also has a plugin for Vim that
   allows you to search through your project files. It is _incredibly_ powerful, and
   I highly recommend reading the documentation to see all of the features it has.
 - [bat](https://github.com/sharkdp/bat): replacement for cat with code highlighting, integration.
-  The .zshrc in this repo will use it for file previewing as well from the 
+  The .zshrc in this repo will use it for file previewing as well from the
   command line.
 
 #### Other
@@ -171,8 +174,9 @@ export DOTBARE_TREE="$HOME"
 
 # Configuration
 
-After following the instructions above, everything should work out of the box. Any further
-configuration is optional. Changes to ZSH functionality is controlled through .zshrc as normal.
+With the exception of CoC, after following the instructions above, everything should work out of the box
+(see 'Vim' below for instructions). Any further configuration is optional. Changes to ZSH
+functionality is controlled through .zshrc as normal.
 
 Vim functionality, however, is controlled by .EverVim.vimrc and .EverVim.vimrc.after (the difference
 between the two .vimrc files is for things that should load either before or after EverVim sets up
@@ -206,6 +210,23 @@ file .EverVim.vimrc.after to this project. Any variables added here will take
 precedence over the values that EverVim has set. In general it's a good idea
 to keep most of your configuration in .EverVim.vimrc so it's all in one place;
 only add variables here that need to be here.
+
+### CoC setup
+
+The settings for CoC have several customizations built in for common languages.
+If you do not use these languages, then you do not need the customizations from
+this repo. If you do use any of them, you will need to install the relevant
+ones for you from the following list of CoC plugins. To do this, simply open an
+nvim session and type `:CocInstall <plugin>` for each.
+
+- coc-prettier: use [Prettier](https://prettier.io/) for auto-formatting code on save
+- coc-highlight: highlight all occurrences of the word under the cursor + color codes
+- coc-eslint: ESLint support for JS/TS
+- coc-tsserver: TypeScript support
+- coc-json: JSON support
+- coc-pyright: Python support
+- coc-jedi: Python support
+- coc-rust-analyser: Rust support
 
 ## vimwiki
 
@@ -266,9 +287,10 @@ customizations. Here are a few important ones:
   if bat is installed.
 
 ## Known Issues
-- Sometimes tab completion can get painfully slow (requiring a ctrl-c to exit it) 
-  or starts exhibiting strange behavior.  If this occurs, running the command
-  `rebuild_compinit` might fix it.  This simply rebuilds the cache that is used for 
+
+- Sometimes tab completion can get painfully slow (requiring a ctrl-c to exit it)
+  or starts exhibiting strange behavior. If this occurs, running the command
+  `rebuild_compinit` might fix it. This simply rebuilds the cache that is used for
   tab completion, which can sometimes get corrupted or outdated.
 
 ## Creating Updates

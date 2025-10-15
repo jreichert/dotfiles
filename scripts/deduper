@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Script to find duplicate files with custom suffix pattern
+# Usage: ./deduper.sh [-p <pattern>] <directory>
+
+show_help() {
+    echo "Usage: $0 [-p <pattern>] <directory>"
+    echo ""
+    echo "Find duplicate files where one has a suffix pattern before the extension."
+    echo ""
+    echo "Options:"
+    echo "  -p <pattern>    Use custom suffix pattern (default: \" 2\")"
+    echo "  --help          Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0 /path/to/photos                    # Find files with \" 2\" suffix"
+    echo "  $0 -p \" (1)\" /path/to/photos         # Find files with \" (1)\" suffix"
+    echo "  $0 -p \"_copy\" /path/to/photos        # Find files with \"_copy\" suffix"
+    echo ""
+    echo "Supported file extensions: jpg, jpeg, png"
+    echo "Only files with matching extensions are considered duplicates."
+}
+
+# Default pattern
+PATTERN=" 2"
+DIR=""
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -p)
+            PATTERN="$2"
+            shift 2
+            ;;
+        --help)
+            show_help
+            exit 0
+            ;;
+        -*)
+            echo "Error: Unknown option $1"
+            show_help
+            exit 1
+            ;;
+        *)
+            if [ -z "$DIR" ]; then
+                DIR="$1"
+            else
+                echo "Error: Multiple directories specified"
+                show_help
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Check if directory was provided
+if [ -z "$DIR" ]; then
+    show_help
+    exit 1
+fi
+
+if [ ! -d "$DIR" ]; then
+    echo "Error: '$DIR' is not a directory"
+    exit 1
+fi
+
+# Change to the target directory
+cd "$DIR" || exit 1
+
+# Escape special regex characters in the pattern for use in regex
+ESCAPED_PATTERN=$(printf '%s\n' "$PATTERN" | sed 's/[[\.*^$()+?{|]/\\&/g')
+
+# Find all files with supported extensions
+find . -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | while read -r file; do
+    # Remove leading ./ and get just the filename
+    filename=$(basename "$file")
+    
+    # Check if filename ends with the pattern followed by an extension
+    # Use case-insensitive matching for extensions
+    if [[ "$filename" =~ ^(.+)${ESCAPED_PATTERN}\.(jpg|jpeg|png)$ ]]; then
+        base_name="${BASH_REMATCH[1]}"
+        extension="${BASH_REMATCH[2]}"
+        
+        # Check if the corresponding file without the pattern exists with the SAME extension
+        original_file="${base_name}.${extension}"
+        
+        if [ -f "$original_file" ]; then
+            echo "$filename"
+        fi
+    fi
+done

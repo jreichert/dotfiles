@@ -237,7 +237,11 @@ set rtp+=/usr/local/opt/fzf
 " nnoremap <silent> <CR> :nohlsearch<BAR>:echo<CR>
 "hnnoremap <silent> <Leader>h :nohlsearch<BAR>:echo<CR>
 
-" shortcut to completely close the current buffer;
+" Open a terminal at the bottom of the screen for whatever
+" Map <Leader>t to open a 12-line terminal at bottom
+"nnoremap <Leader>th :botright split | resize 12
+" nnoremap <silent> <Leader>th :botright split \| resize 12 \| terminal \| startinsert<CR>
+
 " NOTE: this kills Vim if used with NERDTree.  For that, use the bufkil plugin
 " instead (:BD)
 nnoremap <Leader>bw :bwipeout<CR>
@@ -286,6 +290,9 @@ function s:format_shortcuts()
 endfunction
 command FormatShortcuts :call s:format_shortcuts()<CR>
 " command FormatShortcuts Redir verbose map
+
+" Show diffs of the current file from the last saved version
+command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
 " NERDTree
 "nnoremap <Leader>na <plug>NERDTreeTabsToggle<CR>

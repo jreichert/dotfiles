@@ -1,7 +1,18 @@
+# Load secret environment variables, if any
+if [[ -f "$HOME/.secrets" ]]; then
+    source "$HOME/.secrets"
+fi
+
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+
 export CC=/opt/homebrew/opt/llvm/bin/clang
+
+# Golang environment variables
+export GOROOT=$(brew --prefix go)/libexec
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 
 ##### FOR SILICON MAC USERS #####
 # In order to use Rosetta2 for x86_64 emulation, you need a separate 
@@ -216,8 +227,6 @@ git config --global user.email "$EMAIL"
 # even know exist, but turn it off if this bugs you 
 export ZSH_ALIAS_FINDER_AUTOMATIC=true
 
-# Commenting this out since moving to Notion
-# export TODOIST_API_KEY="$(pass Todoist/API)"
 export EDITOR='vim'
 if command -v nvim &> /dev/null 
 then 
@@ -352,6 +361,24 @@ rebuild_compinit() {
     compinit
 }
 
+# Paste the text 'vim "$1""' into the current terminal, 
+# first expanding ~ if present.  This is useful for automatically 
+# opening files in vim from the command line with the correct path. 
+# In particular, it can be used with keyboard bindings inside of Cursor 
+# to drop into a real vim session for editing (i.e. not a Cursor editor 
+# with vim bindings - so if there are vim plugins or functions that are 
+# needed but not available in Cursor, this will work).
+vimpaste() {
+  # Expand tilde and wrap in quotes
+  # $1 is the path (possibly with ~ and spaces)
+  local expanded
+  # Expand ~ and variables
+  eval "expanded=\"$1\""
+  # Now pass to vim, quoted
+  nvim "$expanded"
+}
+
+
 ####### PERSONAL ALIASES ##########
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -381,6 +408,8 @@ alias whereami="echo $HOST"
 alias zshconfig="vim ~/.zshrc"
 alias vimwiki="vim -c VimwikiIndex"
 alias acs=als
+alias path_sort="echo $PATH | tr ':' '\n' | sort -u"
+
 
 # use GNU ls for better coloring when not on a Linux system
 # NOTE: This only aliases the ls command, even though gnu coreutils adds replacements for many
@@ -424,6 +453,15 @@ alias_if_installed nvim gdtlvim "git difftool --no-prompt --tool=nvimdiff"
 # environment of the current directory
 alias venvactivate="source ./venv/bin/activate"
 
+# Fabric AI (dmessler version, not Microsoft)
+alias fabric=fabric-ai
+
+# Dungeon Crawl Stone Soup (DCSS) is a free, open-source, single-player dungeon exploration game
+# Playable in a terminal but must be launched from a Mac app
+# alias dcss=/Applications/Dungeon\ Crawl\ Stone\ Soup.app/Contents/MacOS/crawl
+# alias dcss=' -dir "/Applications/Dungeon Crawl Stone Soup.app/Contents/Resources/crawl-data"'
+alias dcss='(cd "/Applications/Dungeon Crawl Stone Soup - Console.app/Contents/Resources" && ./crawl)'
+
 # Created by `pipx` on 2023-07-10 17:42:43
 export PATH="/usr/local/opt/postgresql@15/bin:$PATH:/Users/jake/.local/bin"
 
@@ -448,3 +486,10 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+export PATH="$HOME/miniconda3/bin:$PATH"
+
+# ~/scripts contains custom functions that should be available from the command line;
+# Add ~/scripts to PATH if it exists
+if [ -d "$HOME/scripts" ]; then
+    export PATH="$HOME/scripts:$PATH"
+fi
