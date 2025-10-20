@@ -3,16 +3,31 @@ if [[ -f "$HOME/.secrets" ]]; then
     source "$HOME/.secrets"
 fi
 
+# Conditionally do stuff depending on your OS
+OS_TYPE="$(uname -s)"
+
+case "$OS_TYPE" in
+    Darwin)
+	# macOS settings
+	export CC=/opt/homebrew/opt/llvm/bin/clang
+        . /opt/homebrew/opt/asdf/libexec/asdf.sh
+        ;;
+    Linux)
+	# Linux settings
+	;;
+esac
+
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
-export CC=/opt/homebrew/opt/llvm/bin/clang
 
 # Golang environment variables
-export GOROOT=$(brew --prefix go)/libexec
-export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
+# TODO: Make this work for Linux as well
+if [[ $OS_TYPE == "Darwin" ]]; then
+  export GOROOT=$(brew --prefix go)/libexec
+  export GOPATH=$HOME/go
+  export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
+fi
 
 ##### FOR SILICON MAC USERS #####
 # In order to use Rosetta2 for x86_64 emulation, you need a separate 
@@ -31,42 +46,46 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 
 # Function to dynamically set environment variables based on Homebrew prefix
 set_homebrew_compilers() {
-  # Determine the active Homebrew prefix
-  local brew_prefix
-  brew_prefix=$(brew --prefix)
-
-  if [[ "$brew_prefix" == "/usr/local" ]]; then
-    # x86_64 Homebrew (Intel)
-    export CC="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang"
-    export CXX="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang++"
-    export LDFLAGS="-L/usr/local/opt/openssl@3/lib -L/usr/local/opt/gnutls/lib"
-    export CPPFLAGS="-I/usr/local/opt/openssl@3/include -I/usr/local/opt/gnutls/include"
-    export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-  elif [[ "$brew_prefix" == "/opt/homebrew" ]]; then
-    # ARM Homebrew (Apple Silicon)
-    export CC="/opt/homebrew/Library/Homebrew/shims/mac/super/clang"
-    export CXX="/opt/homebrew/Library/Homebrew/shims/mac/super/clang++"
-    export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib -L/opt/homebrew/opt/gnutls/lib"
-    export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include -I/opt/homebrew/opt/gnutls/include"
-    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-  else
-    # Default fallback (system Clang)
-    export CC="/usr/bin/clang"
-    export CXX="/usr/bin/clang++"
-    unset LDFLAGS
-    unset CPPFLAGS
+  if [[ $OS_TYPE == "Darwin" ]]; then
+    # Determine the active Homebrew prefix
+    local brew_prefix
+    brew_prefix=$(brew --prefix)
+  
+    if [[ "$brew_prefix" == "/usr/local" ]]; then
+      # x86_64 Homebrew (Intel)
+      export CC="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang"
+      export CXX="/usr/local/homebrew/Library/Homebrew/shims/mac/super/clang++"
+      export LDFLAGS="-L/usr/local/opt/openssl@3/lib -L/usr/local/opt/gnutls/lib"
+      export CPPFLAGS="-I/usr/local/opt/openssl@3/include -I/usr/local/opt/gnutls/include"
+      export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+    elif [[ "$brew_prefix" == "/opt/homebrew" ]]; then
+      # ARM Homebrew (Apple Silicon)
+      export CC="/opt/homebrew/Library/Homebrew/shims/mac/super/clang"
+      export CXX="/opt/homebrew/Library/Homebrew/shims/mac/super/clang++"
+      export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib -L/opt/homebrew/opt/gnutls/lib"
+      export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include -I/opt/homebrew/opt/gnutls/include"
+      export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+    else
+      # Default fallback (system Clang)
+      export CC="/usr/bin/clang"
+      export CXX="/usr/bin/clang++"
+      unset LDFLAGS
+      unset CPPFLAGS
+    fi
   fi
 }
-
-# Default to platform-native Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers
-
-## DON'T USE THIS ALIAS UNLESS YOU KNOW WHAT YOU ARE DOING - see above ##
-# Alias for switching to x86_64 Homebrew
-alias intel-brew='eval "$(/usr/local/bin/brew shellenv)" && set_homebrew_compilers'
-
-# Alias for switching back to ARM-based Homebrew
-alias arm-brew='eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers'
+  
+if [[ $OS_TYPE = "Darwin" ]]; then
+  # Default to platform-native Homebrew
+  eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers
+  
+  ## DON'T USE THIS ALIAS UNLESS YOU KNOW WHAT YOU ARE DOING - see above ##
+  # Alias for switching to x86_64 Homebrew
+  alias intel-brew='eval "$(/usr/local/bin/brew shellenv)" && set_homebrew_compilers'
+  
+  # Alias for switching back to ARM-based Homebrew
+  alias arm-brew='eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers'
+fi
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
@@ -77,13 +96,14 @@ fi
 # fi
 
 
-# set up homebrew path
-BREW_DIR=`which brew`
-eval $($BREW_DIR shellenv)
+if [[ $OS_TYPE == "Darwin" ]]; then
+  # set up homebrew path
+  BREW_DIR=`which brew`
+  eval $($BREW_DIR shellenv)
 
-# set up iterm2 integration
-# TODO: do this only if running on Mac
-zstyle :omz:plugins:iterm2 shell-integration yes
+  # set up iterm2 integration
+  zstyle :omz:plugins:iterm2 shell-integration yes
+fi
 
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
