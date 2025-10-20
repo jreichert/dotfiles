@@ -426,7 +426,12 @@ alias_if_installed nvim vi
 alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 
 # replace cat with bat (https://github.com/sharkdp/bat)
+# this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
+# NOTE: theoretically there is an old, unrelated program also called 'bat' that 
+# exists for Ubuntu.  On the off chance that it is installed, the order below 
+# ensures that the right program will be aliased to cat.
 alias_if_installed bat cat
+alias_if_installed batcat cat
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
 # python, ftcbz and unrar to be installed.  Use:
