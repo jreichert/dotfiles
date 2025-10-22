@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # Script to find duplicate files with custom suffix pattern
+# E.G. find all instances of "photo 2.jpg" where "photo.jpg" exists,
+# if using the default pattern of " 2".  Useful for cleaning up 
+# directories that may have unintentional duplicat entries.
+
 # Usage: ./deduper.sh [-p <pattern>] <directory>
 
 show_help() {

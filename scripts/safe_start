@@ -1,0 +1,44 @@
+#!/bin/bash
+# safe_start: safely kill and restart a program
+# do this by attempting to pkill all instances of that 
+# program owned by the current user, and then to start 
+# a fresh instance of it using the supplied arguments.
+# Useful for logging into remote desktop sessions to ensure 
+# we don't accumulate multiple instances of programs.
+
+# Usage: safe_start program_name [arg1 arg2 ...]
+if [[ $# -lt 1 ]]; then
+    echo "Usage: safe_start program_name [arg1 arg2 ...]" >&2
+    return 1 2>/dev/null || exit 1
+fi
+
+prog="$1"
+shift
+args=("$@")
+retries=5
+sleep_sec=2
+attempt=0
+
+# Skip pkill entirely if nothing is running
+if ! pgrep -u "$USER" -x "$prog" >/dev/null; then
+    "$prog" "${args[@]}" &
+    exit 0
+fi
+
+# Kill any existing instances
+while (( attempt < retries )); do
+    pkill -u "$USER" -x "$prog" 2>/dev/null
+    sleep "$sleep_sec"
+    if ! pgrep -u "$USER" -x "$prog" >/dev/null; then
+        break
+    fi
+    ((attempt++))
+done
+
+# Warn if any instances remain
+if pgrep -u "$USER" -x "$prog" >/dev/null; then
+    echo "safe_start: WARNING: $prog still has running instances after $((retries*sleep_sec))s. Starting anyway." >&2
+fi
+
+# Start program fresh
+"$prog" "${args[@]}" &

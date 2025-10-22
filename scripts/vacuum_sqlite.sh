@@ -1,4 +1,7 @@
 #!/bin/bash
+## Script to vacuum SQLite database files in a specified directory or a single file.
+## This is necessary to reclaim unused space and optimize database performance; 
+## sqlite3 does not automatically reclaim space when data is deleted from it.
 
 # Usage message
 usage() {
