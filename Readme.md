@@ -144,7 +144,8 @@ These programs have shortcuts you can read about in .zshrc. Only install them if
    have a script to automate the process.
 
 2. Install dotbare according to the way you wish to manage package installation. See
-   (https://github.com/kazhala/dotbare#install) for details.
+   (https://github.com/kazhala/dotbare#install) for details. NOTE: If you aren't able to push changes
+   back to the dotfiles repo due to a github auth error, see notes below in Troubleshooting.
 
 3. Add the following two variables to your .zshrc file:
 
@@ -294,6 +295,15 @@ customizations. Here are a few important ones:
   tab completion, which can sometimes get corrupted or outdated.
 
 ## Creating Updates
+
+NOTE: On some installs, you won't be able to push updates back to GitHub until you update your GitHub credentials inside of dotbare.  To do this:
+
+  1. Create a new SSH keypair for GitHub.  You can either do "github auth login" which will 
+  handle the setup for you, or you can follow one of the many online guides for setting 
+  up an ssh key to GitHub.
+  2. cd to ~/.dotbare and type the following: 
+  `git remote set-url origin git@github.com:USERNAME/REPO.git.`  
+  If you don't do this **you will not be able to push any changes**.
 
 dotbare automatically tracks any changes to files that are already included in this repo. After you
 have made any changes, you can push them using normal git syntax (git add, commit, push, etc.) just

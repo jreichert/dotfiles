@@ -18,7 +18,7 @@ case "$OS_TYPE" in
 esac
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.local/bin:$HOME/.executor:$HOME/bin:/usr/local/bin:$PATH
 
 
 # Golang environment variables
@@ -450,7 +450,7 @@ alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 # NOTE: theoretically there is an old, unrelated program also called 'bat' that 
 # exists for Ubuntu.  On the off chance that it is installed, the order below 
 # ensures that the right program will be aliased to cat.
-alias_if_installed bat cat
+# alias_if_installed bat cat
 alias_if_installed batcat cat
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
