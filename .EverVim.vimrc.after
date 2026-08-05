@@ -129,6 +129,14 @@ require 'nvim-treesitter.configs'.setup {
     },
   },
 }
+
+" Disable coc's completion detail/documentation float in vimwiki,
+" keep it enabled everywhere else (code).
+augroup CocFloatToggle
+  autocmd!
+  autocmd BufEnter,WinEnter * call coc#config('suggest.floatEnable', &filetype !=# 'vimwiki')
+augroup END
+
 vim.treesitter.language.register("dockerfile", "Dockerfile")
 EOF
 

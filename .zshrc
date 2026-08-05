@@ -9,8 +9,8 @@ OS_TYPE="$(uname -s)"
 case "$OS_TYPE" in
     Darwin)
 	# macOS settings
+    export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 	export CC=/opt/homebrew/opt/llvm/bin/clang
-        . /opt/homebrew/opt/asdf/libexec/asdf.sh
         ;;
     Linux)
 	# Linux settings
@@ -18,7 +18,7 @@ case "$OS_TYPE" in
 esac
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 
 
 # Golang environment variables
@@ -28,6 +28,7 @@ if [[ $OS_TYPE == "Darwin" ]]; then
   export GOPATH=$HOME/go
   export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH
 fi
+
 
 ##### FOR SILICON MAC USERS #####
 # In order to use Rosetta2 for x86_64 emulation, you need a separate 
@@ -87,9 +88,17 @@ if [[ $OS_TYPE = "Darwin" ]]; then
   alias arm-brew='eval "$(/opt/homebrew/bin/brew shellenv)" && set_homebrew_compilers'
 fi
 
+# Rust environment VARIABLES
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
+
+# Android SDK environment VARIABLES
+# TODO: check for Android installed or not
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 
 # if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
 # . $HOME/.asdf/installs/rust/1.82.0/env
@@ -225,9 +234,43 @@ plugins+=(iterm2 macos)
 
 source $ZSH/oh-my-zsh.sh
 
-# maybe this can be done using plugins instead
-# autoload -U bashcompinit
-# bashcompinit
+# # ----------------------------------------
+# # argc-completions and bash-completions
+# # argc-completions take precedence
+# # Skips either if the relevant completions have not been installed
+# # ----------------------------------------
+
+# # Initialize Zsh completion system
+# autoload -Uz compinit && compinit
+
+# # --- Optional: load system-wide bash-completions first ---
+# BASH_COMPLETION_DIR="/usr/local/share/bash-completion/completions"
+# if [ -d "$BASH_COMPLETION_DIR" ]; then
+#     echo "loading bash completions from $BASH_COMPLETION_DIR"
+#     autoload -Uz bashcompinit && bashcompinit
+#     for bc_file in "$BASH_COMPLETION_DIR"/*; do
+#         [[ "$bc_file" == *.sh ]] && [ -r "$bc_file" ] && source "$bc_file"
+#     done
+# fi
+
+# # --- Load argc-completions last so they take precedence ---
+# ARGC_COMPLETIONS_ROOT="/usr/local/share/argc-completions"
+# if [ -d "$ARGC_COMPLETIONS_ROOT" ]; then
+#     echo "loading argc completions from $ARGC_COMPLETIONS_ROOT"
+#     ARGC_COMPLETIONS_PATH="$ARGC_COMPLETIONS_ROOT/completions/macos:$ARGC_COMPLETIONS_ROOT/completions"
+#     export PATH="$ARGC_COMPLETIONS_ROOT/bin:$PATH"
+
+#     # Detect all available argc scripts
+#     argc_scripts=( )
+#     for dir in "$ARGC_COMPLETIONS_ROOT/completions/macos" "$ARGC_COMPLETIONS_ROOT/completions"; do
+#         [ -d "$dir" ] && argc_scripts+=( $(ls -p -1 "$dir" | sed -n 's/\.sh$//p') )
+#     done
+
+#     # Load the completions if any scripts were found
+#     if (( ${#argc_scripts[@]} > 0 )); then
+#         source <(argc --argc-completions zsh $argc_scripts)
+#     fi
+# fi
 
 #eval "$(pyenv virtualenv-init -)"
 
@@ -476,6 +519,7 @@ alias_if_installed nvim gdtlvim "git difftool --no-prompt --tool=nvimdiff"
 
 # Python Virtualenv and venv; assumes you are always activating the virtual
 # environment of the current directory
+alias venvcreate="python3 -m venv ./venv"
 alias venvactivate="source ./venv/bin/activate"
 
 # Fabric AI (dmessler version, not Microsoft)
@@ -518,3 +562,11 @@ export PATH="$HOME/miniconda3/bin:$PATH"
 if [ -d "$HOME/scripts" ]; then
     export PATH="$HOME/scripts:$PATH"
 fi
+export CURSOR_SHELL_INTEGRATION=0
+
+# bun completions
+[ -s "/Users/jake/.bun/_bun" ] && source "/Users/jake/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

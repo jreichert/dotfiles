@@ -61,7 +61,7 @@ UnPlug 'vim-scripts/a.vim'
 " Random stuff
 Plug 'chaoren/vim-imageview'
 " Plug 'romgrk/todoist.nvim', { 'do': ':TodoistInstall' }
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
 Plug 'tpope/vim-rhubarb'
 
 " Ultisnips (currently not working)

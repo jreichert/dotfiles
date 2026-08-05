@@ -529,3 +529,10 @@ let g:tagbar_type_vimwiki = {
              \],
         \}
 
+" Ignore line too long linting errors for Python
+" In your .vimrc
+let g:ale_python_flake8_options = '--ignore=E501'
+let g:ale_python_pylint_options = '--disable=C0301'
+
+" Do the same for Pymode
+let g:pymode_lint_ignore = ['E501']
