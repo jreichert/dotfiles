@@ -20,7 +20,6 @@ esac
 # If you come from bash you might have to change your $PATH.
 export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 
-
 # Golang environment variables
 # TODO: Make this work for Linux as well
 if [[ $OS_TYPE == "Darwin" ]]; then
@@ -493,7 +492,7 @@ alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 # NOTE: theoretically there is an old, unrelated program also called 'bat' that 
 # exists for Ubuntu.  On the off chance that it is installed, the order below 
 # ensures that the right program will be aliased to cat.
-alias_if_installed bat cat
+# alias_if_installed bat cat
 alias_if_installed batcat cat
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
