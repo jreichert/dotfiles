@@ -18,7 +18,7 @@ case "$OS_TYPE" in
 esac
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 
 # Golang environment variables
 # TODO: Make this work for Linux as well
@@ -92,12 +92,13 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
 
-# Android SDK environment VARIABLES
-# TODO: check for Android installed or not
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+# Android SDK environment variables (only if Android SDK is installed)
+if [[ -d "$HOME/Library/Android/sdk" ]]; then
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+fi
 
 # if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
 # . $HOME/.asdf/installs/rust/1.82.0/env
@@ -487,13 +488,27 @@ alias_if_installed nvim vi
 # SnowSQL is the CLI client for Snowflake
 alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 
-# replace cat with bat (https://github.com/sharkdp/bat)
+# replace cat with bat (https://github.com/sharkdp/bat), but only when stdout is a
+# terminal; in pipelines (e.g. `cat foo.txt | grep ...`) the real cat is used so the
+# output isn't decorated. fzf-tab previews call bat directly via lessfilter-fzf.
 # this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
-# NOTE: theoretically there is an old, unrelated program also called 'bat' that 
-# exists for Ubuntu.  On the off chance that it is installed, the order below 
-# ensures that the right program will be aliased to cat.
-# alias_if_installed bat cat
-alias_if_installed batcat cat
+# NOTE: theoretically there is an old, unrelated program also called 'bat' that
+# exists for Ubuntu.  On the off chance that it is installed, batcat is checked
+# first so the right program is used.
+if (( $+commands[batcat] || $+commands[bat] )); then
+  unalias cat 2>/dev/null
+  function cat {
+    if [[ -t 1 ]]; then
+      if (( $+commands[batcat] )); then
+        command batcat "$@"
+      else
+        command bat "$@"
+      fi
+    else
+      command cat "$@"
+    fi
+  }
+fi
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
 # python, ftcbz and unrar to be installed.  Use:
