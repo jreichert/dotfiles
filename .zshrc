@@ -466,6 +466,21 @@ alias_if_installed() {
     fi
 }
 
+# replace cat with bat (https://github.com/sharkdp/bat)
+# Named 'bat' on Homebrew/Mac but 'batcat' on Ubuntu (an unrelated package
+# already owns the name 'bat' there).  Use a function rather than an alias so
+# bat only replaces cat for interactive viewing — in pipelines, real cat runs,
+# so e.g. `cat foo.txt | grep 'bar'` still gets plain output.
+cat() {
+  local batbin
+  batbin=$(command -v batcat 2>/dev/null || command -v bat 2>/dev/null)
+  if [[ -t 1 && -n "$batbin" ]]; then
+    "$batbin" --paging=never "$@"
+  else
+    command cat "$@"
+  fi
+}
+
 # QoL shortcuts
 alias whereami="echo $HOST"
 alias zshconfig="vim ~/.zshrc"
@@ -487,27 +502,6 @@ alias_if_installed nvim vi
 
 # SnowSQL is the CLI client for Snowflake
 alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
-
-# replace cat with bat (https://github.com/sharkdp/bat), but only when stdout is a
-# terminal; in pipelines (e.g. `cat foo.txt | grep ...`) the real cat is used so the
-# output isn't decorated. fzf-tab previews call bat directly via lessfilter-fzf.
-# this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
-# NOTE: theoretically there is an old, unrelated program also called 'bat' that
-# exists for Ubuntu, so plain 'bat' is only trusted on macOS.
-# The viewer is resolved on each call, since PATH can change mid-session (e.g. arm-brew).
-if (( $+commands[batcat] )) || [[ $OS_TYPE == "Darwin" && -n ${commands[bat]} ]]; then
-  unalias cat 2>/dev/null
-  function cat {
-    if [[ -t 1 ]]; then
-      if (( $+commands[batcat] )); then
-        command batcat "$@"; return
-      elif [[ $OS_TYPE == "Darwin" ]] && (( $+commands[bat] )); then
-        command bat "$@"; return
-      fi
-    fi
-    command cat "$@"
-  }
-fi
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
 # python, ftcbz and unrar to be installed.  Use:
