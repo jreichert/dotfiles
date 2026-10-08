@@ -18,7 +18,7 @@ case "$OS_TYPE" in
 esac
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=/opt/homebrew/opt/openjdk@17/bin:/opt/homebrew/opt/qt@5/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 
 # Golang environment variables
 # TODO: Make this work for Linux as well
@@ -92,12 +92,13 @@ if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
 
-# Android SDK environment VARIABLES
-# TODO: check for Android installed or not
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+# Android SDK environment variables (only if Android SDK is installed)
+if [[ -d "$HOME/Library/Android/sdk" ]]; then
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+  export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+fi
 
 # if [[ -f $HOME/.asdf/installs/rust/1.82.0/env ]]; then
 # . $HOME/.asdf/installs/rust/1.82.0/env

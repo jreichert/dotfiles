@@ -125,7 +125,9 @@ that I couldn't imagine a shell without them.
 
 ### Development Tools
 
-- [asdf](https://asdf-vm.com/): The best multi-language version manager
+- [asdf](https://asdf-vm.com/): The best multi-language version manager.
+  NOTE: asdf 0.16+ is a Go binary and no longer ships `asdf.sh`, so instead of sourcing it
+  you need its shims on your PATH: `export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"`
 - [git-delta](https://github.com/dandavison/delta): easier to understand command line diffs
 - [DiffMerge](https://sourcegear.com/diffmerge/): Git diff/merge tool
   (however see note below if you do not install it)
@@ -282,7 +284,9 @@ customizations. Here are a few important ones:
 - Support for `.tsx` Typescript files has been added to Tagbar. However if NeoVim
   is available, the Vista plugin is far superior for TS development.
 - bat is an amazing replacement for cat. It adds line numbering, syntax highlighting,
-  navigation and more.
+  navigation and more. `cat` is only replaced with bat for interactive viewing (when
+  output goes to a terminal); in pipelines like `cat foo.txt | grep ...` the real `cat`
+  is used so output isn't decorated.
 - fzf is _incredibly_ powerful, both for shell integration as well as inside Vim.
   There are many tutorials for it available online. It uses bat for file previews
   if bat is installed.
@@ -293,6 +297,9 @@ customizations. Here are a few important ones:
   or starts exhibiting strange behavior. If this occurs, running the command
   `rebuild_compinit` might fix it. This simply rebuilds the cache that is used for
   tab completion, which can sometimes get corrupted or outdated.
+- A coc.nvim update broke floating suggestion windows in vimwiki buffers, so
+  coc's `suggest.floatEnable` is disabled for vimwiki buffers (and left enabled
+  everywhere else) via an autocmd in `.EverVim.vimrc.after`.
 
 ## Creating Updates
 
