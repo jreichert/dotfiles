@@ -465,6 +465,21 @@ alias_if_installed() {
     fi
 }
 
+# replace cat with bat (https://github.com/sharkdp/bat)
+# Named 'bat' on Homebrew/Mac but 'batcat' on Ubuntu (an unrelated package
+# already owns the name 'bat' there).  Use a function rather than an alias so
+# bat only replaces cat for interactive viewing — in pipelines, real cat runs,
+# so e.g. `cat foo.txt | grep 'bar'` still gets plain output.
+cat() {
+  local batbin
+  batbin=$(command -v bat 2>/dev/null || command -v batcat 2>/dev/null)
+  if [[ -t 1 && -n "$batbin" ]]; then
+    "$batbin" --paging=never "$@"
+  else
+    command cat "$@"
+  fi
+}
+
 # QoL shortcuts
 alias whereami="echo $HOST"
 alias zshconfig="vim ~/.zshrc"
@@ -486,14 +501,6 @@ alias_if_installed nvim vi
 
 # SnowSQL is the CLI client for Snowflake
 alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
-
-# replace cat with bat (https://github.com/sharkdp/bat)
-# this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
-# NOTE: theoretically there is an old, unrelated program also called 'bat' that 
-# exists for Ubuntu.  On the off chance that it is installed, the order below 
-# ensures that the right program will be aliased to cat.
-# alias_if_installed bat cat
-alias_if_installed batcat cat
 
 #cbr2cbz converts all CBRs in the current dir to CBZs.  Requires
 # python, ftcbz and unrar to be installed.  Use:
