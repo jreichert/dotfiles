@@ -494,19 +494,18 @@ alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 # this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
 # NOTE: theoretically there is an old, unrelated program also called 'bat' that
 # exists for Ubuntu, so plain 'bat' is only trusted on macOS.
-if (( $+commands[batcat] )); then
-  CAT_VIEWER=batcat
-elif [[ $OS_TYPE == "Darwin" ]] && (( $+commands[bat] )); then
-  CAT_VIEWER=bat
-fi
-if [[ -n $CAT_VIEWER ]]; then
+# The viewer is resolved on each call, since PATH can change mid-session (e.g. arm-brew).
+if (( $+commands[batcat] )) || [[ $OS_TYPE == "Darwin" && -n ${commands[bat]} ]]; then
   unalias cat 2>/dev/null
   function cat {
     if [[ -t 1 ]]; then
-      command $CAT_VIEWER "$@"
-    else
-      command cat "$@"
+      if (( $+commands[batcat] )); then
+        command batcat "$@"; return
+      elif [[ $OS_TYPE == "Darwin" ]] && (( $+commands[bat] )); then
+        command bat "$@"; return
+      fi
     fi
+    command cat "$@"
   }
 fi
 
