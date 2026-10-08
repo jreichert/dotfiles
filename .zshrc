@@ -472,7 +472,7 @@ alias_if_installed() {
 # so e.g. `cat foo.txt | grep 'bar'` still gets plain output.
 cat() {
   local batbin
-  batbin=$(command -v bat 2>/dev/null || command -v batcat 2>/dev/null)
+  batbin=$(command -v batcat 2>/dev/null || command -v bat 2>/dev/null)
   if [[ -t 1 && -n "$batbin" ]]; then
     "$batbin" --paging=never "$@"
   else
