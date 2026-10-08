@@ -493,17 +493,17 @@ alias_if_installed /Applications/SnowSQL.app/Contents/MacOS/snowsql snowsql
 # output isn't decorated. fzf-tab previews call bat directly via lessfilter-fzf.
 # this one is a bit wonky because it is named bat on Mac but batcat on Ubuntu
 # NOTE: theoretically there is an old, unrelated program also called 'bat' that
-# exists for Ubuntu.  On the off chance that it is installed, batcat is checked
-# first so the right program is used.
-if (( $+commands[batcat] || $+commands[bat] )); then
+# exists for Ubuntu, so plain 'bat' is only trusted on macOS.
+if (( $+commands[batcat] )); then
+  CAT_VIEWER=batcat
+elif [[ $OS_TYPE == "Darwin" ]] && (( $+commands[bat] )); then
+  CAT_VIEWER=bat
+fi
+if [[ -n $CAT_VIEWER ]]; then
   unalias cat 2>/dev/null
   function cat {
     if [[ -t 1 ]]; then
-      if (( $+commands[batcat] )); then
-        command batcat "$@"
-      else
-        command bat "$@"
-      fi
+      command $CAT_VIEWER "$@"
     else
       command cat "$@"
     fi
